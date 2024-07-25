@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Card, CardBody, CardTitle, CardText } from 'reactstrap';
 import { fetchTotalProducts } from '../redux/totalProductSlice';
-import './Css/TotalProduct.css'; // Stil dosyasını ekledik
+import '../Css/TotalProduct.css';
 
 const TotalProduct = () => {
   const dispatch = useDispatch();

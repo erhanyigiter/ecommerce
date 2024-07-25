@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export const fetchTotalProducts = createAsyncThunk(
-  'totalProducts/fetchTotalProducts',
+  'totalProduct/fetchTotalProducts',
   async () => {
     const response = await axios.get('http://localhost:5220/api/Products/total'); // API endpoint'ini kontrol et
     return response.data;
@@ -10,7 +10,7 @@ export const fetchTotalProducts = createAsyncThunk(
 );
 
 const totalProductSlice = createSlice({
-  name: 'totalProducts',
+  name: 'totalProduct',
   initialState: {
     total: 0,
     status: 'idle',
@@ -19,7 +19,7 @@ const totalProductSlice = createSlice({
   reducers: {},
   extraReducers(builder) {
     builder
-      .addCase(fetchTotalProducts.pending, (state, action) => {
+      .addCase(fetchTotalProducts.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(fetchTotalProducts.fulfilled, (state, action) => {

@@ -3,16 +3,10 @@ import TotalProduct from '../components/TotalProduct'; // TotalProduct bileşeni
 
 const Dashboard = () => {
 
-  console.log('Dashboard rendered');
 
   return (
     <Container>
-      <h1>Dashboard</h1> {/* Basit bir JSX eklendi */}
-      <Row>
-        <Col>
-
-        </Col>
-      </Row>
+        <h2>Dashboard</h2>
       <Row>
         <Col md="4">
           <TotalProduct />
