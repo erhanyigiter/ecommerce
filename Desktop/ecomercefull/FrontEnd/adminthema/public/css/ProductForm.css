@@ -1,0 +1,39 @@
+.product-form-card {
+    max-width: 600px;
+    margin: 2rem auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .product-form-card .card-body {
+    padding: 2rem;
+  }
+  
+  .product-form-card .card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .product-form-card .card-subtitle {
+    font-size: 1rem;
+    color: #666;
+  }
+  
+  .product-form-card .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .product-form-card .form-group label {
+    font-weight: bold;
+  }
+  
+  .product-form-card .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+  
+  .product-form-card .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
+  

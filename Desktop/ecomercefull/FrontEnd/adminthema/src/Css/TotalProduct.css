@@ -1,0 +1,33 @@
+.total-product-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .total-product-card {
+    width: 100%;
+    max-width: 300px;
+    margin: 20px;
+    padding: 20px;
+    text-align: center;
+    background: linear-gradient(135deg, #71b7e6, #9b59b6);
+    color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .total-product-card:hover {
+    transform: translateY(-10px);
+  }
+  
+  .total-product-card h5 {
+    font-size: 1.5rem;
+  }
+  
+  .total-count {
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  
