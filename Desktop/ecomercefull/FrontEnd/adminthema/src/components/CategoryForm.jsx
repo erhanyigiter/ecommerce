@@ -3,25 +3,27 @@ import { useDispatch } from 'react-redux';
 import { addCategory, fetchCategories, updateCategory } from '../redux/categoriesSlice';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom';
+import { Route, useNavigate } from 'react-router-dom';
 
 const CategoryForm = ({ currentCategory, setCurrentCategory }) => {
   const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState(''); // Resim URL'si durumu
+  const [status, setStatus] = useState(false); // Status checkbox durumu
 
   useEffect(() => {
     if (currentCategory) {
       setName(currentCategory.name);
       setDescription(currentCategory.description);
       setImageUrl(currentCategory.imageUrl); // Eğer kategori düzenleniyorsa resim URL'sini ayarla
+      setStatus(currentCategory.isStatus); // Durumu ayarla
     }
   }, [currentCategory]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const category = { name, description, imageUrl }; // Resim URL'sini ekle
+    const category = { name, description, imageUrl, isStatus: status }; // Status bilgisini ekle
     if (currentCategory) {
       // Eğer mevcut kategori düzenleniyorsa
       dispatch(updateCategory({ ...category, id: currentCategory.id }))
@@ -40,6 +42,7 @@ const CategoryForm = ({ currentCategory, setCurrentCategory }) => {
         .then(() => {
           Swal.fire('Added!', 'Category successfully added.', 'success');
           dispatch(fetchCategories()); // Yeni kategori eklendikten sonra kategorileri güncelle
+          Route('/category-management/update');
         })
         .catch((error) => {
           Swal.fire('Error!', 'Category could not be added: ' + error.message, 'error');
@@ -50,12 +53,13 @@ const CategoryForm = ({ currentCategory, setCurrentCategory }) => {
     setDescription('');
     setImageUrl(''); // Resim URL'sini temizle
     setCurrentCategory(null);
+    setStatus(false); // Checkbox durumunu temizle
   };
 
   const navigate = useNavigate();
   const handleCancel = () => {
     setCurrentCategory(null);
-    navigate(-1);
+    navigate('/category-management/update');
   };
 
   return (
@@ -92,8 +96,27 @@ const CategoryForm = ({ currentCategory, setCurrentCategory }) => {
           onChange={(e) => setImageUrl(e.target.value)}
           required
         />
+        {imageUrl && (
+          <img
+            src={imageUrl}
+            alt="Preview"
+            style={{ marginTop: '10px', maxHeight: '200px' }}
+          />
+        )}
       </FormGroup>
-      <Button type="submit">{currentCategory ? 'Update' : 'Add'} Category</Button>
+      <FormGroup check>
+        <Label check>
+          <Input
+            type="checkbox"
+            name="status"
+            id="status"
+            checked={status}
+            onChange={(e) => setStatus(e.target.checked)}
+          />{' '}
+          Active
+        </Label>
+      </FormGroup>
+      <Button type="submit" color="primary" className="mr-2">{currentCategory ? 'Update' : 'Add'} Category</Button>
       <Button type="button" onClick={handleCancel} className="ml-2" color="secondary">Cancel</Button>
     </Form>
   );

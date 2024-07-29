@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../redux/productsSlice';
 import { Button } from 'reactstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Products = () => {
   const dispatch = useDispatch();

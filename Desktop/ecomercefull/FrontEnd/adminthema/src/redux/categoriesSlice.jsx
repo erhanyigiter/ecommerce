@@ -1,11 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+const apiUrl = 'http://localhost:5220/api/Categories';
+
 // Kategorileri getirmek için thunk
 export const fetchCategories = createAsyncThunk(
   'categories/fetchCategories',
   async () => {
-    const response = await axios.get('http://localhost:5220/api/Categories');
+    const response = await axios.get(apiUrl);
     return response.data;
   }
 );
@@ -14,7 +16,7 @@ export const fetchCategories = createAsyncThunk(
 export const addCategory = createAsyncThunk(
   'categories/addCategory',
   async (category) => {
-    const response = await axios.post('http://localhost:5220/api/Categories', category);
+    const response = await axios.post(apiUrl, category);
     return response.data;
   }
 );
@@ -23,7 +25,7 @@ export const addCategory = createAsyncThunk(
 export const updateCategory = createAsyncThunk(
   'categories/updateCategory',
   async ({ id, ...category }) => {
-    const response = await axios.put(`http://localhost:5220/api/Categories/${id}`, category);
+    const response = await axios.put(`${apiUrl}/${id}`, category);
     return response.data;
   }
 );
@@ -32,8 +34,17 @@ export const updateCategory = createAsyncThunk(
 export const deleteCategory = createAsyncThunk(
   'categories/deleteCategory',
   async (id) => {
-    await axios.delete(`http://localhost:5220/api/Categories/${id}`);
+    await axios.delete(`${apiUrl}/${id}`);
     return id;
+  }
+);
+
+// Kategori durumu güncellemek için thunk
+export const updateCategoryStatus = createAsyncThunk(
+  'categories/updateCategoryStatus',
+  async ({ id, isStatus }) => {
+    const response = await axios.put(`${apiUrl}/${id}`, { isStatus });
+    return { id, isStatus: response.data.isStatus };
   }
 );
 
@@ -64,6 +75,13 @@ const categoriesSlice = createSlice({
       .addCase(updateCategory.fulfilled, (state, action) => {
         const index = state.categories.findIndex(category => category.id === action.payload.id);
         state.categories[index] = action.payload;
+      })
+      .addCase(updateCategoryStatus.fulfilled, (state, action) => {
+        const { id, isStatus } = action.payload;
+        const existingCategory = state.categories.find(category => category.id === id);
+        if (existingCategory) {
+          existingCategory.isStatus = isStatus;
+        }
       })
       .addCase(deleteCategory.fulfilled, (state, action) => {
         state.categories = state.categories.filter(category => category.id !== action.payload);

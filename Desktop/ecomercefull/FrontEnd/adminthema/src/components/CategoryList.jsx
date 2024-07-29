@@ -34,7 +34,7 @@ const CategoryList = ({ setCurrentCategory }) => {
             Swal.fire('Deleted!', 'Category has been deleted.', 'success');
           })
           .catch((error) => {
-            Swal.fire('Error!', error.message, 'error');
+            Swal.fire('Error!', 'Category could not be deleted! If there are any products in it, delete them first!', 'error');
           });
       }
     });
@@ -62,6 +62,7 @@ const CategoryList = ({ setCurrentCategory }) => {
             <th>Name</th>
             <th>Description</th>
             <th>Image</th> 
+            <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -70,7 +71,10 @@ const CategoryList = ({ setCurrentCategory }) => {
             <tr key={category.id}>
               <td>{category.name}</td>
               <td>{category.description}</td>
+              
               <td><img src={category.imageUrl} alt={category.name} width="50" height="50" /></td> 
+              <td>{category.isStatus ? 'Active' : 'Passive'}</td>
+
               <td>
                 <Button color="warning" onClick={() => handleEdit(category)}>Edit</Button>
                 {' '}

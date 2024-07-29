@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts } from '../redux/productsSlice'; // Doğru yolu kontrol edin
+import { fetchProducts } from '../redux/productsSlice';
 
 export default function ProductsMain() {
   const dispatch = useDispatch();

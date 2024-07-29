@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Button, Form, FormGroup, Label, Input, Card, CardBody, CardTitle, CardSubtitle } from 'reactstrap';
 import Swal from 'sweetalert2';
-import { addProduct, updateProduct, fetchProducts } from '../redux/productsSlice'; // fetchProducts eklenmiştir
-import {useNavigate} from 'react-router-dom';
+import { addProduct, updateProduct, fetchProducts } from '../redux/productsSlice';
+import { useNavigate } from 'react-router-dom';
+
 const ProductForm = ({ currentProduct, setCurrentProduct, categories = [] }) => {
   const [product, setProduct] = useState({
     name: '',
@@ -11,7 +12,8 @@ const ProductForm = ({ currentProduct, setCurrentProduct, categories = [] }) => 
     price: '',
     stock: '',
     imageUrl: '',
-    categoryId: ''
+    categoryId: '',
+    isStatus: false
   });
 
   const dispatch = useDispatch();
@@ -27,17 +29,18 @@ const ProductForm = ({ currentProduct, setCurrentProduct, categories = [] }) => 
         price: '',
         stock: '',
         imageUrl: '',
-        categoryId: ''
+        categoryId: '',
+        isStatus: false
       });
     }
   }, [currentProduct]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setProduct({
-      ...product,
-      [name]: value,
-    });
+    const { name, value, type, checked } = e.target;
+    setProduct((prevProduct) => ({
+      ...prevProduct,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
   };
 
   const handleSubmit = (e) => {
@@ -49,6 +52,7 @@ const ProductForm = ({ currentProduct, setCurrentProduct, categories = [] }) => 
           Swal.fire('Updated!', 'Product has been updated.', 'success');
           setCurrentProduct(null); // Güncelleme başarılı olduğunda formu temizle
           dispatch(fetchProducts()); // Ürünler listesini güncelle
+          navigate('/product-management/update'); // Yönlendirme yap
         })
         .catch((error) => {
           Swal.fire('Error!', error.message, 'error');
@@ -64,9 +68,11 @@ const ProductForm = ({ currentProduct, setCurrentProduct, categories = [] }) => 
             price: '',
             stock: '',
             imageUrl: '',
-            categoryId: ''
+            categoryId: '',
+            isStatus: false
           });
           dispatch(fetchProducts()); // Ürünler listesini güncelle
+          navigate('/product-management/update'); // Yönlendirme yap
         })
         .catch((error) => {
           Swal.fire('Error!', error.message, 'error');
@@ -76,7 +82,7 @@ const ProductForm = ({ currentProduct, setCurrentProduct, categories = [] }) => 
 
   const handleCancel = () => {
     setCurrentProduct(null);
-    navigate(-1);
+    navigate('/product-management/update');
   }
 
   return (
@@ -114,8 +120,14 @@ const ProductForm = ({ currentProduct, setCurrentProduct, categories = [] }) => 
               ))}
             </Input>
           </FormGroup>
+          <FormGroup check>
+            <Label check>
+              <Input type="checkbox" name="isStatus" checked={product.isStatus} onChange={handleChange} />{' '}
+              Status
+            </Label>
+          </FormGroup>
           <Button type="submit" color="primary" className="mr-2">{currentProduct ? 'Update' : 'Add'} Product</Button>
-          <Button type="button" color="secondary" onClick= {handleCancel}>Cancel</Button>
+          <Button type="button" color="secondary" onClick={handleCancel}>Cancel</Button>
         </Form>
       </CardBody>
     </Card>

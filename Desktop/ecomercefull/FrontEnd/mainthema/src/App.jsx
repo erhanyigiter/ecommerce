@@ -1,10 +1,19 @@
 import MainPage from "./pages/MainPage"
+import TopBar from "./components/TopBar"
+import NavBar from "./components/NavBar"
+import Footer from "./components/Footer"
+import BackToTop from "./components/BackToTop"
+
 function App() {
 
   return (
 
     <>
-    <MainPage/>
+      <TopBar />
+      <NavBar />
+      <MainPage />
+      <Footer />
+      <BackToTop />
     </>
 
   )

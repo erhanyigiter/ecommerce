@@ -21,7 +21,7 @@ export default function Categories() {
   } else if (status === 'succeeded') {
     content = categories.map((category) => (
       <div className="col-lg-3 col-md-4 col-sm-6 pb-1" key={category.id}>
-        <a className="text-decoration-none" href="">
+        <a className="text-decoration-none" href={`#category-${category.id}`}>
           <div className="cat-item d-flex align-items-center mb-4">
             <div className="overflow-hidden" style={{ width: '100px', height: '100px' }}>
               <img className="img-fluid" src={category.imageUrl} alt={category.name} />

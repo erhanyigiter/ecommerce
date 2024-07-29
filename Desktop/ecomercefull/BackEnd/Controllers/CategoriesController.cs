@@ -55,6 +55,7 @@ namespace ecommercefull.Controllers
             existingCategory.Name = category.Name;
             existingCategory.Description = category.Description;
             existingCategory.ImageUrl = category.ImageUrl;
+            existingCategory.IsStatus = category.IsStatus;
 
             _context.Update(existingCategory);
 
@@ -92,12 +93,18 @@ namespace ecommercefull.Controllers
         public async Task<IActionResult> DeleteCategory(int id)
         {
             var category = await _context.Categories.FindAsync(id);
-            if (category == null)
+            if (category == null || category.IsDeleted)
             {
                 return NotFound();
             }
+            var hasStockProducts = await _context.Products.AnyAsync(p => p.CategoryId == id && p.Stock > 0);
+            if (hasStockProducts)
+            {
+                return BadRequest("Bu kategoriye ait stoğu olan ürünler var. Kategoriyi silemezsiniz.");
+            }
 
-            _context.Categories.Remove(category);
+            category.IsDeleted = true;
+            _context.Categories.Update(category);
             await _context.SaveChangesAsync();
 
             return NoContent();

@@ -24,14 +24,14 @@ namespace ecommercefull.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-            return await _context.Products.Include(p => p.Category).ToListAsync();
+            return await _context.Products.Include(p => p.Category).Where(p => !p.IsDeleted).ToListAsync();
         }
 
         // GET: api/Products/total
         [HttpGet("total")]
         public async Task<ActionResult<int>> GetTotalProducts()
         {
-            var totalProducts = await _context.Products.CountAsync();
+            var totalProducts = await _context.Products.CountAsync(p => !p.IsDeleted);
             return Ok(totalProducts);
         }
 
@@ -41,7 +41,7 @@ namespace ecommercefull.Controllers
         {
             var product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
 
-            if (product == null)
+            if (product == null || product.IsDeleted)
             {
                 return NotFound();
             }
@@ -54,7 +54,7 @@ namespace ecommercefull.Controllers
         public async Task<IActionResult> PutProduct(int id, Product product)
         {
             var existingProduct = await _context.Products.FindAsync(id);
-            if (existingProduct == null)
+            if (existingProduct == null || existingProduct.IsDeleted)
             {
                 return NotFound();
             }
@@ -65,6 +65,7 @@ namespace ecommercefull.Controllers
             existingProduct.Stock = product.Stock;
             existingProduct.ImageUrl = product.ImageUrl;
             existingProduct.CategoryId = product.CategoryId;
+            existingProduct.IsStatus = product.IsStatus; 
 
             _context.Update(existingProduct);
 
@@ -102,12 +103,12 @@ namespace ecommercefull.Controllers
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = await _context.Products.FindAsync(id);
-            if (product == null)
+            if (product == null || product.IsDeleted)
             {
                 return NotFound();
             }
-
-            _context.Products.Remove(product);
+            product.IsDeleted = true;
+            _context.Products.Update(product);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -115,7 +116,7 @@ namespace ecommercefull.Controllers
 
         private bool ProductExists(int id)
         {
-            return _context.Products.Any(e => e.Id == id);
+            return _context.Products.Any(e => e.Id == id && !e.IsDeleted);
         }
     }
 }

@@ -59,16 +59,24 @@ const ProductList = ({ setCurrentProduct }) => {
       <Table striped>
         <thead>
           <tr>
-            <th>ImageUrl</th>
+            <th>Category</th>
             <th>Name</th>
             <th>Description</th>
             <th>Price</th>
+            <th>Stock</th>
+            <th>ImageUrl</th>
+            <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {products.map((product) => (
             <tr key={product.id}>
+              <td>{product.categoryId}</td>
+              <td>{product.name}</td>
+              <td>{product.description}</td>
+              <td>{product.price}</td>
+              <td>{product.stock}</td>
               <td>
                 <img
                   src={product.imageUrl}
@@ -76,9 +84,7 @@ const ProductList = ({ setCurrentProduct }) => {
                   style={{ width: '50px', height: '50px', objectFit: 'cover' }}
                 />
               </td>
-              <td>{product.name}</td>
-              <td>{product.description}</td>
-              <td>{product.price}</td>
+              <td>{product.isStatus ? 'Active' : 'Inactive'}</td>
               <td>
                 <Button color="warning" onClick={() => handleEdit(product)}>Edit</Button>{' '}
                 <Button color="danger" onClick={() => handleDelete(product.id)}>Delete</Button>
@@ -90,7 +96,7 @@ const ProductList = ({ setCurrentProduct }) => {
       </Table>
     );
   } else if (status === 'failed') {
-    content = <div>{error}</div>; // Ürünler yüklenemediğinde gösterilecek mesaj
+    content = <div>{error}</div>; 
   }
 
   return <div>{content}</div>;

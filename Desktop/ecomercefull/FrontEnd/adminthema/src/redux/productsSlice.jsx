@@ -10,18 +10,31 @@ export const fetchProducts = createAsyncThunk('products/fetchProducts', async ()
 });
 
 export const addProduct = createAsyncThunk('products/addProduct', async (product) => {
-  const response = await axios.post(apiUrl, product);
+  const response = await axios.post(apiUrl, product, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
   return response.data;
 });
 
 export const updateProduct = createAsyncThunk('products/updateProduct', async (product) => {
-  const response = await axios.put(`${apiUrl}/${product.id}`, product);
+  const response = await axios.put(`${apiUrl}/${product.id}`, product, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
   return response.data;
 });
 
 export const deleteProduct = createAsyncThunk('products/deleteProduct', async (productId) => {
-  await axios.delete(`${apiUrl}/${productId}`);
-  return productId;
+  // Server-side'da ürünün IsDeleted durumunu true yapacak bir endpoint çağırıyoruz
+  const response = await axios.delete(`${apiUrl}/${productId}`, null, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  return productId; // productId'yi döndürüyoruz
 });
 
 // Slice
@@ -32,7 +45,15 @@ const productsSlice = createSlice({
     status: 'idle',
     error: null
   },
-  reducers: {},
+  reducers: {
+    setProductStatus: (state, action) => {
+      const { id, isStatus } = action.payload;
+      const existingProduct = state.products.find(product => product.id === id);
+      if (existingProduct) {
+        existingProduct.isStatus = isStatus;
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProducts.pending, (state) => {
@@ -40,7 +61,8 @@ const productsSlice = createSlice({
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.products = action.payload;
+        // Yalnızca isDeleted = false olan ürünleri store'a ekleyin
+        state.products = action.payload.filter(product => !product.isDeleted);
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.status = 'failed';
@@ -56,9 +78,12 @@ const productsSlice = createSlice({
         }
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
+        // Silinen ürünü store'dan çıkarın
         state.products = state.products.filter(product => product.id !== action.payload);
       });
   },
 });
 
+// Export actions and reducer
+export const { setProductStatus } = productsSlice.actions;
 export default productsSlice.reducer;

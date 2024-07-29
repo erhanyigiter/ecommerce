@@ -6,17 +6,21 @@ import Featured from '../components/Featured'
 import Categories from '../components/Categories'
 import Products from '../components/Products'
 import Offer from '../components/Offer'
+import Vendor from '../components/Vendor'
+import Footer from '../components/Footer'
+import BackToTop from '../components/BackToTop'
 
 export default function main() {
   return (
     <>
-    <TopBar/>
-    <NavBar/>
+
     <Carousel/>
     <Featured/>
     <Categories/>
     <Products/>
     <Offer/>
+    <Vendor/>
+
     </>
   )
 }
