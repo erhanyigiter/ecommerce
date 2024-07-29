@@ -87,7 +87,7 @@ const ProductForm = ({ currentProduct, setCurrentProduct, categories = [] }) => 
           </FormGroup>
           <FormGroup>
             <Label for="imageUrl">Image URL</Label>
-            <Input type="text" name="imageUrl" id="imageUrl" value={product.imageUrl} onChange={handleChange} />
+            <Input type="text" name="imageUrl" id="imageUrl" value={product.imageUrl} onChange={handleChange} required />
           </FormGroup>
           <FormGroup>
             <Label for="categoryId">Category</Label>

@@ -277,3 +277,4 @@
 /Users/erhanyigiter/Desktop/ecomercefull/BackEnd/obj/Debug/net8.0/ecomercefull.pdb
 /Users/erhanyigiter/Desktop/ecomercefull/BackEnd/obj/Debug/net8.0/ecomercefull.genruntimeconfig.cache
 /Users/erhanyigiter/Desktop/ecomercefull/BackEnd/obj/Debug/net8.0/ref/ecomercefull.dll
+/Users/erhanyigiter/Desktop/ecomercefull/BackEnd/obj/Debug/net8.0/ecomercefull.sourcelink.json

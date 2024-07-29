@@ -15,7 +15,7 @@ namespace ecomercefull.Models
 
         [Range(0, double.MaxValue, ErrorMessage = "Price must be a positive value/ Fiyat pozitif bir değer olmalıdır")]
         public double Price { get; set; }
-        public string? Image { get; set; }
+        public string? ImageUrl { get; set; }
         public int CategoryId { get; set; }
         [JsonIgnore] // Serileştirme sırasında döngüsel referanslardan kaçınmak için eklenmiştir
         public Category? Category { get; set; }

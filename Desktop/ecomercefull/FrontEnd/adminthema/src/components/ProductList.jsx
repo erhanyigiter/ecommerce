@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button, Table } from 'reactstrap';
-import Swal from 'sweetalert2';
+import { Table, Button } from 'reactstrap';
 import { fetchProducts, deleteProduct } from '../redux/productsSlice';
+import Swal from 'sweetalert2';
 
 const ProductList = ({ setCurrentProduct }) => {
   const dispatch = useDispatch();
@@ -40,8 +40,7 @@ const ProductList = ({ setCurrentProduct }) => {
   };
 
   const handleEdit = (product) => {
-    console.log('Edit clicked', product); // Debugging için ekleyin
-    setCurrentProduct(product); // Edit butonuna tıklandığında ürünü ayarla
+    setCurrentProduct(product);
   };
 
   let content;
@@ -53,20 +52,26 @@ const ProductList = ({ setCurrentProduct }) => {
       <Table striped>
         <thead>
           <tr>
+            <th>ImageUrl</th>
             <th>Name</th>
             <th>Description</th>
             <th>Price</th>
-            <th>Stock</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {products.map((product) => (
             <tr key={product.id}>
+              <td>
+                <img
+                  src={product.imageUrl}
+                  alt={product.name}
+                  style={{ width: '50px', height: '50px', objectFit: 'cover' }}
+                />
+              </td>
               <td>{product.name}</td>
               <td>{product.description}</td>
               <td>{product.price}</td>
-              <td>{product.stock}</td>
               <td>
                 <Button color="warning" onClick={() => handleEdit(product)}>Edit</Button>
                 {' '}

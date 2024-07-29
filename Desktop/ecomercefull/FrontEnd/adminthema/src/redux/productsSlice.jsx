@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const apiUrl = 'http://localhost:5220/api/Products';
 
+// Async thunks
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
   const response = await axios.get(apiUrl);
   return response.data;
@@ -23,6 +24,7 @@ export const deleteProduct = createAsyncThunk('products/deleteProduct', async (p
   return productId;
 });
 
+// Slice
 const productsSlice = createSlice({
   name: 'products',
   initialState: {
@@ -49,7 +51,9 @@ const productsSlice = createSlice({
       })
       .addCase(updateProduct.fulfilled, (state, action) => {
         const index = state.products.findIndex(product => product.id === action.payload.id);
-        state.products[index] = action.payload;
+        if (index !== -1) {
+          state.products[index] = action.payload;
+        }
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
         state.products = state.products.filter(product => product.id !== action.payload);

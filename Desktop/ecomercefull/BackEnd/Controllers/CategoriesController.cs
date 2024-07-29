@@ -1,11 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ecomercefull.DataAccesLayer;
 using ecomercefull.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ecommercefull.Controllers
 {
@@ -20,18 +19,18 @@ namespace ecommercefull.Controllers
             _context = context;
         }
 
-        // GET: api/Categories
+        // Tüm kategorileri getirir.
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
-            return await _context.Categories.Include(c => c.Products).ToListAsync();
+            return await _context.Categories.ToListAsync();
         }
 
-        // GET: api/Categories/5
+        // Belirli bir kategori getirir.
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> GetCategory(int id)
         {
-            var category = await _context.Categories.Include(c => c.Products).FirstOrDefaultAsync(c => c.Id == id);
+            var category = await _context.Categories.FindAsync(id);
 
             if (category == null)
             {
@@ -41,16 +40,23 @@ namespace ecommercefull.Controllers
             return category;
         }
 
-        // PUT: api/Categories/5
+        // Belirli bir kategoriyi günceller.
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCategory(int id, Category category)
         {
-            if (id != category.Id)
+           
+
+            var existingCategory = await _context.Categories.FindAsync(id);
+            if (existingCategory == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(category).State = EntityState.Modified;
+            existingCategory.Name = category.Name;
+            existingCategory.Description = category.Description;
+            existingCategory.ImageUrl = category.ImageUrl;
+
+            _context.Update(existingCategory);
 
             try
             {
@@ -71,7 +77,7 @@ namespace ecommercefull.Controllers
             return NoContent();
         }
 
-        // POST: api/Categories
+        // Yeni bir kategori oluşturur.
         [HttpPost]
         public async Task<ActionResult<Category>> PostCategory(Category category)
         {
@@ -81,7 +87,7 @@ namespace ecommercefull.Controllers
             return CreatedAtAction("GetCategory", new { id = category.Id }, category);
         }
 
-        // DELETE: api/Categories/5
+        // Belirli bir kategoriyi siler.
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
@@ -95,6 +101,14 @@ namespace ecommercefull.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        // Kategorilerin toplam sayısını döndürür.
+        [HttpGet("total")]
+        public async Task<ActionResult<int>> GetTotalCategories()
+        {
+            int totalCategories = await _context.Categories.CountAsync();
+            return Ok(totalCategories);
         }
 
         private bool CategoryExists(int id)

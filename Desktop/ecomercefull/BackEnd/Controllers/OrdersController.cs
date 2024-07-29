@@ -44,10 +44,6 @@ namespace ecommercefull.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutOrder(int id, Order order)
         {
-            if (id != order.Id)
-            {
-                return BadRequest();
-            }
 
             _context.Entry(order).State = EntityState.Modified;
 
@@ -99,6 +95,13 @@ namespace ecommercefull.Controllers
         private bool OrderExists(int id)
         {
             return _context.Orders.Any(e => e.Id == id);
+        }
+        //get:api/orders/totalorders
+        [HttpGet("total")]
+        public async Task<ActionResult<int>> GetTotalOrders()
+        {
+            int totalOrders = await _context.Orders.CountAsync();
+            return Ok (totalOrders);
         }
     }
 }

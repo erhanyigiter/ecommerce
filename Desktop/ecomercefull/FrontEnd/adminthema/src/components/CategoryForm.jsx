@@ -1,72 +1,69 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
-import Swal from 'sweetalert2';
+import { useDispatch, useSelector } from 'react-redux';
 import { addCategory, updateCategory } from '../redux/categoriesSlice';
+import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
 const CategoryForm = ({ currentCategory, setCurrentCategory }) => {
-  const [category, setCategory] = useState({
-    name: '',
-    description: ''
-  });
-
   const dispatch = useDispatch();
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [imageUrl, setImageUrl] = useState(''); // Image URL state
 
   useEffect(() => {
     if (currentCategory) {
-      setCategory(currentCategory);
-    } else {
-      setCategory({
-        name: '',
-        description: ''
-      });
+      setName(currentCategory.name);
+      setDescription(currentCategory.description);
+      setImageUrl(currentCategory.imageUrl); // Set image URL if editing a category
     }
   }, [currentCategory]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setCategory({
-      ...category,
-      [name]: value,
-    });
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
+    const category = { name, description, imageUrl }; // Include image URL
     if (currentCategory) {
-      dispatch(updateCategory(category))
-        .unwrap()
-        .then(() => {
-          Swal.fire('Updated!', 'Category has been updated.', 'success');
-          setCurrentCategory(null); // Güncelleme başarılı olduğunda formu temizle
-        })
-        .catch((error) => {
-          Swal.fire('Error!', error.message, 'error');
-        });
+      dispatch(updateCategory({ ...category, id: currentCategory.id }));
     } else {
-      dispatch(addCategory(category))
-        .unwrap()
-        .then(() => {
-          Swal.fire('Added!', 'Category has been added.', 'success');
-        })
-        .catch((error) => {
-          Swal.fire('Error!', error.message, 'error');
-        });
+      dispatch(addCategory(category));
     }
+    setName('');
+    setDescription('');
+    setImageUrl(''); // Clear image URL
+    setCurrentCategory(null);
   };
 
   return (
     <Form onSubmit={handleSubmit}>
       <FormGroup>
         <Label for="name">Name</Label>
-        <Input type="text" name="name" id="name" value={category.name} onChange={handleChange} required />
+        <Input
+          type="text"
+          name="name"
+          id="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
       </FormGroup>
       <FormGroup>
         <Label for="description">Description</Label>
-        <Input type="text" name="description" id="description" value={category.description} onChange={handleChange} required />
+        <Input
+          type="text"
+          name="description"
+          id="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
       </FormGroup>
-      <Button type="submit" color="primary">{currentCategory ? 'Update' : 'Add'} Category</Button>
-      <Button type="button" color="secondary" onClick={() => setCurrentCategory(null)}>Cancel</Button>
+      <FormGroup>
+        <Label for="imageUrl">Image URL</Label>
+        <Input
+          type="text"
+          name="imageUrl"
+          id="imageUrl"
+          value={imageUrl}
+          onChange={(e) => setImageUrl(e.target.value)}
+        />
+      </FormGroup>
+      <Button type="submit">{currentCategory ? 'Update' : 'Add'} Category</Button>
     </Form>
   );
 };

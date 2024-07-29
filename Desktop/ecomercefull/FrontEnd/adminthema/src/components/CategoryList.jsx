@@ -4,7 +4,7 @@ import { Button, Table } from 'reactstrap';
 import Swal from 'sweetalert2';
 import { fetchCategories, deleteCategory } from '../redux/categoriesSlice';
 
-const CategoryList = ({ setCurrentCategory }) => { // Prop olarak alın
+const CategoryList = ({ setCurrentCategory }) => {
   const dispatch = useDispatch();
   const categories = useSelector((state) => state.categories.categories);
   const status = useSelector((state) => state.categories.status);
@@ -54,6 +54,7 @@ const CategoryList = ({ setCurrentCategory }) => { // Prop olarak alın
           <tr>
             <th>Name</th>
             <th>Description</th>
+            <th>Image</th> {/* Image Column */}
             <th>Actions</th>
           </tr>
         </thead>
@@ -62,6 +63,7 @@ const CategoryList = ({ setCurrentCategory }) => { // Prop olarak alın
             <tr key={category.id}>
               <td>{category.name}</td>
               <td>{category.description}</td>
+              <td><img src={category.imageUrl} alt={category.name} width="50" height="50" /></td> {/* Display Image */}
               <td>
                 <Button color="warning" onClick={() => handleEdit(category)}>Edit</Button>
                 {' '}

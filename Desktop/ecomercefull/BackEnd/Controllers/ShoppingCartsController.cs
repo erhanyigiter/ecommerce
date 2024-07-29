@@ -45,11 +45,7 @@ namespace ecommercefull.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutShoppingCart(int id, ShoppingCart shoppingCart)
         {
-            if (id != shoppingCart.Id)
-            {
-                return BadRequest();
-            }
-
+            
             _context.Entry(shoppingCart).State = EntityState.Modified;
 
             try

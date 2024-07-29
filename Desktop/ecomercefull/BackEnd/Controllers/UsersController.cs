@@ -47,10 +47,6 @@ public class UsersController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> PutUser(int id, User user)
     {
-        if (id != user.Id)
-        {
-            return BadRequest();
-        }
 
         _context.Entry(user).State = EntityState.Modified;
 
@@ -105,6 +101,17 @@ public class UsersController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    // Kullanıcıların toplam sayısını döndürür.
+    // GET: api/Users/total
+    [HttpGet("total")]
+    public async Task<ActionResult<int>> GetTotalUsers()
+    {
+        // Veri tabanındaki kullanıcıların sayısını asenkron olarak sayar.
+        int totalUsers = await _context.Users.CountAsync();
+        // Toplam kullanıcı sayısını döner.
+        return Ok(totalUsers);
     }
 
     private bool UserExists(int id)
