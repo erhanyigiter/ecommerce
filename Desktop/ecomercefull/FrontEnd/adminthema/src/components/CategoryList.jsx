@@ -41,7 +41,7 @@ const CategoryList = ({ setCurrentCategory }) => {
   };
 
   const handleEdit = (category) => {
-    setCurrentCategory(category); // Fonksiyonu kullan
+    setCurrentCategory(category);
   };
 
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ const CategoryList = ({ setCurrentCategory }) => {
           <tr>
             <th>Name</th>
             <th>Description</th>
-            <th>Image</th> {/* Image Column */}
+            <th>Image</th> 
             <th>Actions</th>
           </tr>
         </thead>
@@ -70,7 +70,7 @@ const CategoryList = ({ setCurrentCategory }) => {
             <tr key={category.id}>
               <td>{category.name}</td>
               <td>{category.description}</td>
-              <td><img src={category.imageUrl} alt={category.name} width="50" height="50" /></td> {/* Display Image */}
+              <td><img src={category.imageUrl} alt={category.name} width="50" height="50" /></td> 
               <td>
                 <Button color="warning" onClick={() => handleEdit(category)}>Edit</Button>
                 {' '}
