@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Table, Button } from 'reactstrap';
 import { fetchProducts, deleteProduct } from '../redux/productsSlice';
 import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 
 const ProductList = ({ setCurrentProduct }) => {
   const dispatch = useDispatch();
@@ -12,7 +13,7 @@ const ProductList = ({ setCurrentProduct }) => {
 
   useEffect(() => {
     if (status === 'idle') {
-      dispatch(fetchProducts());
+      dispatch(fetchProducts()); // Ürünleri yükleme işlemi başlatılıyor
     }
   }, [status, dispatch]);
 
@@ -30,23 +31,29 @@ const ProductList = ({ setCurrentProduct }) => {
         dispatch(deleteProduct(id))
           .unwrap()
           .then(() => {
-            Swal.fire('Deleted!', 'Product has been deleted.', 'success');
+            Swal.fire('Deleted!', 'Product has been deleted.', 'success'); // Ürün başarıyla silindiğinde bildirim
           })
           .catch((error) => {
-            Swal.fire('Error!', error.message, 'error');
+            Swal.fire('Error!', error.message, 'error'); // Hata mesajı
           });
       }
     });
   };
 
   const handleEdit = (product) => {
-    setCurrentProduct(product);
+    setCurrentProduct(product); // Ürün düzenleme işlemi için setCurrentProduct fonksiyonu çağrılıyor
+  };
+
+  const navigate = useNavigate();
+  const handleCancel = () => {
+    setCurrentProduct(null);
+    navigate('/dashboard');
   };
 
   let content;
 
   if (status === 'loading') {
-    content = <div>Loading...</div>;
+    content = <div>Loading...</div>; // Ürünler yüklenirken gösterilecek mesaj
   } else if (status === 'succeeded') {
     content = (
       <Table striped>
@@ -73,9 +80,9 @@ const ProductList = ({ setCurrentProduct }) => {
               <td>{product.description}</td>
               <td>{product.price}</td>
               <td>
-                <Button color="warning" onClick={() => handleEdit(product)}>Edit</Button>
-                {' '}
+                <Button color="warning" onClick={() => handleEdit(product)}>Edit</Button>{' '}
                 <Button color="danger" onClick={() => handleDelete(product.id)}>Delete</Button>
+                <Button color="secondary" onClick={handleCancel} className="ml-2">Cancel</Button>
               </td>
             </tr>
           ))}
@@ -83,7 +90,7 @@ const ProductList = ({ setCurrentProduct }) => {
       </Table>
     );
   } else if (status === 'failed') {
-    content = <div>{error}</div>;
+    content = <div>{error}</div>; // Ürünler yüklenemediğinde gösterilecek mesaj
   }
 
   return <div>{content}</div>;

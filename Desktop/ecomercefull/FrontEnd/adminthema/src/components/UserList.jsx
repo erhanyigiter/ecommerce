@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, Table } from 'reactstrap';
 import Swal from 'sweetalert2';
 import { fetchUsers, deleteUser } from '../redux/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 const UserList = ({ setCurrentUser }) => {
   const dispatch = useDispatch();
@@ -42,6 +43,11 @@ const UserList = ({ setCurrentUser }) => {
   const handleEdit = (user) => {
     setCurrentUser(user); // Edit butonuna tıklandığında user'ı ayarla
   };
+  const navigate = useNavigate();
+  const handleCancel = () => {
+    setCurrentUser(null);
+    navigate('/dashboard');
+  }
 
   let content;
 
@@ -68,6 +74,7 @@ const UserList = ({ setCurrentUser }) => {
                 <Button color="warning" onClick={() => handleEdit(user)}>Edit</Button>
                 {' '}
                 <Button color="danger" onClick={() => handleDelete(user.id)}>Delete</Button>
+                <Button color="secondary" onClick={handleCancel} className="ml-2">Cancel</Button>
               </td>
             </tr>
           ))}

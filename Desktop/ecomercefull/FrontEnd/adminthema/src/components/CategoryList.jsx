@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, Table } from 'reactstrap';
 import Swal from 'sweetalert2';
 import { fetchCategories, deleteCategory } from '../redux/categoriesSlice';
+import { useNavigate } from 'react-router-dom';
 
 const CategoryList = ({ setCurrentCategory }) => {
   const dispatch = useDispatch();
@@ -43,6 +44,12 @@ const CategoryList = ({ setCurrentCategory }) => {
     setCurrentCategory(category); // Fonksiyonu kullan
   };
 
+  const navigate = useNavigate();
+  const handleCancel = () => {
+    setCurrentCategory(null);
+    navigate('/dashboard');
+  }
+
   let content;
 
   if (status === 'loading') {
@@ -68,6 +75,8 @@ const CategoryList = ({ setCurrentCategory }) => {
                 <Button color="warning" onClick={() => handleEdit(category)}>Edit</Button>
                 {' '}
                 <Button color="danger" onClick={() => handleDelete(category.id)}>Delete</Button>
+                {' '}
+                <Button color="secondary" onClick={handleCancel}>Cancel</Button>
               </td>
             </tr>
           ))}

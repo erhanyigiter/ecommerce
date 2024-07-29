@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Button, Form, FormGroup, Label, Input, Card, CardBody, CardTitle, CardSubtitle } from 'reactstrap';
 import Swal from 'sweetalert2';
-import { addProduct, updateProduct } from '../redux/productsSlice';
-
+import { addProduct, updateProduct, fetchProducts } from '../redux/productsSlice'; // fetchProducts eklenmiştir
+import {useNavigate} from 'react-router-dom';
 const ProductForm = ({ currentProduct, setCurrentProduct, categories = [] }) => {
   const [product, setProduct] = useState({
     name: '',
@@ -15,6 +15,7 @@ const ProductForm = ({ currentProduct, setCurrentProduct, categories = [] }) => 
   });
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (currentProduct) {
@@ -47,6 +48,7 @@ const ProductForm = ({ currentProduct, setCurrentProduct, categories = [] }) => 
         .then(() => {
           Swal.fire('Updated!', 'Product has been updated.', 'success');
           setCurrentProduct(null); // Güncelleme başarılı olduğunda formu temizle
+          dispatch(fetchProducts()); // Ürünler listesini güncelle
         })
         .catch((error) => {
           Swal.fire('Error!', error.message, 'error');
@@ -56,12 +58,26 @@ const ProductForm = ({ currentProduct, setCurrentProduct, categories = [] }) => 
         .unwrap()
         .then(() => {
           Swal.fire('Added!', 'Product has been added.', 'success');
+          setProduct({ // Ürün eklendikten sonra formu temizle
+            name: '',
+            description: '',
+            price: '',
+            stock: '',
+            imageUrl: '',
+            categoryId: ''
+          });
+          dispatch(fetchProducts()); // Ürünler listesini güncelle
         })
         .catch((error) => {
           Swal.fire('Error!', error.message, 'error');
         });
     }
   };
+
+  const handleCancel = () => {
+    setCurrentProduct(null);
+    navigate(-1);
+  }
 
   return (
     <Card className="product-form-card">
@@ -99,7 +115,7 @@ const ProductForm = ({ currentProduct, setCurrentProduct, categories = [] }) => 
             </Input>
           </FormGroup>
           <Button type="submit" color="primary" className="mr-2">{currentProduct ? 'Update' : 'Add'} Product</Button>
-          <Button type="button" color="secondary" onClick={() => setCurrentProduct(null)}>Cancel</Button>
+          <Button type="button" color="secondary" onClick= {handleCancel}>Cancel</Button>
         </Form>
       </CardBody>
     </Card>

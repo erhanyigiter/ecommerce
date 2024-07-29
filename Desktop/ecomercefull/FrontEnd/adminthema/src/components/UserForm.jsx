@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Button, Form, FormGroup, Label, Input, Card, CardBody, CardTitle, CardSubtitle } from 'reactstrap';
 import Swal from 'sweetalert2';
 import { addUser, updateUser } from '../redux/userSlice';
+import { useNavigate } from 'react-router-dom';
 // import './UserForm.css';
 
 const UserForm = ({ currentUser, setCurrentUser }) => {
@@ -13,6 +14,7 @@ const UserForm = ({ currentUser, setCurrentUser }) => {
   });
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (currentUser) {
@@ -57,6 +59,10 @@ const UserForm = ({ currentUser, setCurrentUser }) => {
         });
     }
   };
+  const handleCancel = () => {
+    setCurrentUser(null);
+    navigate(-1);
+  }
 
   return (
     <Card className="user-form-card">
@@ -77,7 +83,7 @@ const UserForm = ({ currentUser, setCurrentUser }) => {
             <Input type="text" name="address" id="address" value={user.address} onChange={handleChange} required />
           </FormGroup>
           <Button type="submit" color="primary" className="mr-2">{currentUser ? 'Update' : 'Add'} User</Button>
-          <Button type="button" color="secondary" onClick={() => setCurrentUser(null)}>Cancel</Button>
+          <Button type="button" color="secondary" onClick= {handleCancel}>Cancel</Button>
         </Form>
       </CardBody>
     </Card>
