@@ -3,60 +3,54 @@ import { useDispatch } from 'react-redux';
 import { addCategory, fetchCategories, updateCategory } from '../redux/categoriesSlice';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import Swal from 'sweetalert2';
-import { Route, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const CategoryForm = ({ currentCategory, setCurrentCategory }) => {
   const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [imageUrl, setImageUrl] = useState(''); // Resim URL'si durumu
-  const [status, setStatus] = useState(false); // Status checkbox durumu
+  const [imageUrl, setImageUrl] = useState('');
+  const [status, setStatus] = useState(false);
 
   useEffect(() => {
     if (currentCategory) {
       setName(currentCategory.name);
       setDescription(currentCategory.description);
-      setImageUrl(currentCategory.imageUrl); // Eğer kategori düzenleniyorsa resim URL'sini ayarla
-      setStatus(currentCategory.isStatus); // Durumu ayarla
+      setImageUrl(currentCategory.imageUrl);
+      setStatus(currentCategory.isStatus);
     }
   }, [currentCategory]);
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const category = { name, description, imageUrl, isStatus: status }; // Status bilgisini ekle
-    if (currentCategory) {
-      // Eğer mevcut kategori düzenleniyorsa
-      dispatch(updateCategory({ ...category, id: currentCategory.id }))
-        .unwrap()
-        .then(() => {
-          Swal.fire('Updated!', 'Category successfully updated.', 'success');
-          dispatch(fetchCategories()); // Kategori listesini güncelle
-        })
-        .catch((error) => {
-          Swal.fire('Error!', 'Category could not be updated: ' + error.message, 'error');
-        });
-    } else {
-      // Yeni kategori ekleniyorsa
-      dispatch(addCategory(category))
-        .unwrap()
-        .then(() => {
-          Swal.fire('Added!', 'Category successfully added.', 'success');
-          dispatch(fetchCategories()); // Yeni kategori eklendikten sonra kategorileri güncelle
-          Route('/category-management/update');
-        })
-        .catch((error) => {
-          Swal.fire('Error!', 'Category could not be added: ' + error.message, 'error');
-        });
+    const category = { name, description, imageUrl, isStatus: status };
+
+    try {
+      if (currentCategory) {
+        await dispatch(updateCategory({ ...category, id: currentCategory.id })).unwrap();
+        Swal.fire('Updated!', 'Category successfully updated.', 'success');
+      } else {
+        await dispatch(addCategory(category)).unwrap();
+        Swal.fire('Added!', 'Category successfully added.', 'success');
+      }
+
+      // Kategori ekleme/güncelleme sonrası durumu güncelleyin
+      dispatch(fetchCategories());
+      navigate('/category-management/update');
+    } catch (error) {
+      Swal.fire('Error!', 'Category operation failed: ' + error.message, 'error');
     }
+
     // Formu temizle
     setName('');
     setDescription('');
-    setImageUrl(''); // Resim URL'sini temizle
+    setImageUrl('');
     setCurrentCategory(null);
-    setStatus(false); // Checkbox durumunu temizle
+    setStatus(false);
   };
 
-  const navigate = useNavigate();
   const handleCancel = () => {
     setCurrentCategory(null);
     navigate('/category-management/update');

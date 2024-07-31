@@ -1,13 +1,20 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client'; // createRoot'u buradan içe aktarın
 import { Provider } from 'react-redux';
 import store from './redux/store';
 import App from './App';
+import { BrowserRouter as Router } from 'react-router-dom';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
-ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
+// HTML dosyanızda root elementini seçin
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
+root.render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <Router>
+        <App />
+      </Router>
+    </Provider>
+  </React.StrictMode>
 );

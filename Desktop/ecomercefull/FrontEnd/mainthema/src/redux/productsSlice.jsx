@@ -3,7 +3,10 @@ import axios from 'axios';
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
   const response = await axios.get('http://localhost:5220/api/Products');
-  return response.data;
+  console.log('API Response:', response.data); // Bu satırı ekleyin
+
+  // Sadece aktif ve silinmemiş ürünleri almak için filtreleme yapılır.
+  return response.data.filter((product) => product.isStatus === true && product.isDeleted === false);
 });
 
 const productsSlice = createSlice({

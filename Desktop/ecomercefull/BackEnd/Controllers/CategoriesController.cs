@@ -44,7 +44,7 @@ namespace ecommercefull.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCategory(int id, Category category)
         {
-           
+
 
             var existingCategory = await _context.Categories.FindAsync(id);
             if (existingCategory == null)
@@ -97,10 +97,13 @@ namespace ecommercefull.Controllers
             {
                 return NotFound();
             }
-            var hasStockProducts = await _context.Products.AnyAsync(p => p.CategoryId == id && p.Stock > 0);
-            if (hasStockProducts)
+
+            // Kategorideki silinmemiş ürünleri kontrol et
+            var hasActiveProducts = await _context.Products
+                .AnyAsync(p => p.CategoryId == id && !p.IsDeleted);
+            if (hasActiveProducts)
             {
-                return BadRequest("Bu kategoriye ait stoğu olan ürünler var. Kategoriyi silemezsiniz.");
+                return BadRequest("Bu kategoriye ait aktif ürünler var. Kategoriyi silemezsiniz.");
             }
 
             category.IsDeleted = true;
@@ -110,11 +113,12 @@ namespace ecommercefull.Controllers
             return NoContent();
         }
 
+
         // Kategorilerin toplam sayısını döndürür.
         [HttpGet("total")]
         public async Task<ActionResult<int>> GetTotalCategories()
         {
-            int totalCategories = await _context.Categories.CountAsync();
+            int totalCategories = await _context.Categories.CountAsync(c => !c.IsDeleted);
             return Ok(totalCategories);
         }
 

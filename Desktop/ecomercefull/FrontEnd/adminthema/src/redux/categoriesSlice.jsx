@@ -8,7 +8,7 @@ export const fetchCategories = createAsyncThunk(
   'categories/fetchCategories',
   async () => {
     const response = await axios.get(apiUrl);
-    return response.data;
+    return response.data.filter(category => !category.isDeleted);
   }
 );
 
