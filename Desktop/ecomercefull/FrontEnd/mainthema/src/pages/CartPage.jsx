@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { fetchShoppingCart, clearCart, removeItemFromCart, updateItemInCart } from '../redux/shoppingCartSlice';
 import { Button, Table } from 'reactstrap';
 import alertify from 'alertifyjs';
@@ -7,6 +8,7 @@ import 'alertifyjs/build/css/alertify.css';
 
 const CartPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { items, status, error } = useSelector((state) => state.shoppingCart);
 
   useEffect(() => {
@@ -50,6 +52,10 @@ const CartPage = () => {
 
   // Toplam fiyat hesaplama
   const totalPrice = mergedItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+
+  const proceedToCheckout = () => {
+    navigate('/checkout', { state: { items: mergedItems, totalPrice } });
+  };
 
   let content;
 
@@ -146,7 +152,7 @@ const CartPage = () => {
                 </div>
                 <div className="d-flex justify-content-between">
                   <h6 className="font-weight-medium">Shipping</h6>
-                  <h6 className="font-weight-medium">$10</h6>
+                  <h6 className="font-weight-medium">$0</h6>
                 </div>
               </div>
               <div className="pt-2">
@@ -154,10 +160,20 @@ const CartPage = () => {
                   <h5>Total</h5>
                   <h5>${totalPrice + 10}</h5>
                 </div>
-                <Button color="success" block className="font-weight-bold my-3 py-3" onClick={() => alertify.success('Proceeding to checkout...')}>
+                <Button
+                  color="success"
+                  block
+                  className="font-weight-bold my-3 py-3"
+                  onClick={proceedToCheckout}
+                >
                   Proceed To Checkout
                 </Button>
-                <Button color="danger" block className="font-weight-bold my-3 py-3" onClick={handleClearCart}>
+                <Button
+                  color="danger"
+                  block
+                  className="font-weight-bold my-3 py-3"
+                  onClick={handleClearCart}
+                >
                   Clear Cart
                 </Button>
               </div>

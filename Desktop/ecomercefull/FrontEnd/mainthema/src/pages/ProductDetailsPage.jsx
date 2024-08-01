@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { addItemToCart } from '../redux/shoppingCartSlice'; // addItemToCart action'ını içe aktar
+import { addItemToCart } from '../redux/shoppingCartSlice';
 import YouMayAlsoLike from '../components/YouMayAlsoLike';
+import alertify from 'alertifyjs';
+import 'alertifyjs/build/css/alertify.css';
 
 const ProductDetailsPage = () => {
   const { id } = useParams();
@@ -40,6 +42,9 @@ const ProductDetailsPage = () => {
     };
 
     dispatch(addItemToCart(cartItem));
+
+    // Sepete ekleme işlemi tamamlandığında kullanıcıya bildirim göster
+    alertify.success('Item added to cart successfully!');
   };
 
   return (
@@ -48,17 +53,23 @@ const ProductDetailsPage = () => {
         <div className="col-lg-5 mb-30">
           <div id="product-carousel" className="carousel slide" data-ride="carousel">
             <div className="carousel-inner bg-light">
-              {product.images && product.images.map((image, index) => (
-                <div key={index} className={`carousel-item ${index === 0 ? 'active' : ''}`}>
-                  <img className="w-100 h-100" src={image.url} alt={`Product Image ${index + 1}`} />
+              {product.imageUrl ? (
+                <div className="carousel-item active">
+                  <img className="d-block w-100" src={product.imageUrl} alt={product.name} />
                 </div>
-              ))}
+              ) : (
+                <div className="carousel-item active">
+                  <img className="d-block w-100" src="/path/to/default-image.jpg" alt="Default Product" />
+                </div>
+              )}
             </div>
-            <a className="carousel-control-prev" href="#product-carousel" data-slide="prev">
-              <i className="fa fa-2x fa-angle-left text-dark"></i>
+            <a className="carousel-control-prev" href="#product-carousel" role="button" data-slide="prev">
+              <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span className="sr-only">Previous</span>
             </a>
-            <a className="carousel-control-next" href="#product-carousel" data-slide="next">
-              <i className="fa fa-2x fa-angle-right text-dark"></i>
+            <a className="carousel-control-next" href="#product-carousel" role="button" data-slide="next">
+              <span className="carousel-control-next-icon" aria-hidden="true"></span>
+              <span className="sr-only">Next</span>
             </a>
           </div>
         </div>

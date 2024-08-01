@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { fetchWishlist, addItemToCart, removeFromWishlist } from "../redux/wishlistSlice";
-import Hero from "../components/Hero";
 
 const Wishlist = () => {
   const dispatch = useDispatch();
@@ -19,7 +18,6 @@ const Wishlist = () => {
 
   return (
     <>
-      <Hero title="Wishlist" subtitle="Your favorite products" />
       <div className="page-content-wrapper">
         <div className="shopping-cart-area">
           <div className="container">

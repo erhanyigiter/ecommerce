@@ -9,6 +9,9 @@ import ProductDetailsPage from "./pages/ProductDetailsPage";
 import ShopDetails from "./pages/ShopDetails";
 import NotFound from "./components/NotFound";
 import CartPage from "./pages/CartPage";
+import CheckOut from "./pages/CheckOut";
+import Wishlist from "./pages/Whislist";
+
 
 function App() {
   return (
@@ -24,6 +27,8 @@ function App() {
         <Route path="/shop" element={<ShopDetails/>} />
         <Route path="*" element={<NotFound />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/checkout" element={<CheckOut />} />
+        <Route path="/wishlist" element={<Wishlist />} />  
       </Routes>
       <Footer />
       <BackToTop />
