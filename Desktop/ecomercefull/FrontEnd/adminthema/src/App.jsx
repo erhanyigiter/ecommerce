@@ -13,6 +13,8 @@ import Dashboard from './pages/Dashboard';
 import CategoryManagement from './pages/CategoryManagement';
 import UserManagement from './pages/UserManagement';
 import ProductManagement from './pages/ProductManagement';
+import NotFound from './components/NotFound';
+import Footer from './components/Footer';
 
 function App() {
   return (
@@ -75,7 +77,10 @@ function App() {
         <Route path="/category-management/*" element={<CategoryManagement />} />
         <Route path="/user-management/*" element={<UserManagement />} />
         <Route path="/product-management/*" element={<ProductManagement />} />
+        <Route path="*" element={<NotFound />} />
+
       </Routes>
+      <Footer />
     </div>
   );
 }

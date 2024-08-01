@@ -1,14 +1,19 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
+export const fetchProducts = createAsyncThunk('products/fetchProducts', async  ( __,{ getState }) => {
   const response = await axios.get('http://localhost:5220/api/Products');
-  console.log('API Response:', response.data); // Bu satırı ekleyin
+  const categories = getState().categories.categories;
+  const activeCategoryIds = categories.filter(c => c.isStatus).map(c => c.id); 
+  // console.log('API Response:', response.data);
 
   // Sadece aktif ve silinmemiş ürünleri almak için filtreleme yapılır.
-  return response.data.filter((product) => product.isStatus === true && product.isDeleted === false);
+  return response.data.filter((product) =>
+    product.isStatus === true &&
+    product.isDeleted === false &&
+    activeCategoryIds.includes(product.categoryId)
+  );
 });
-
 const productsSlice = createSlice({
   name: 'products',
   initialState: {

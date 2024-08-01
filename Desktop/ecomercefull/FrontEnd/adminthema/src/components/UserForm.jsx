@@ -2,75 +2,54 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Button, Form, FormGroup, Label, Input, Card, CardBody, CardTitle, CardSubtitle } from 'reactstrap';
 import Swal from 'sweetalert2';
-import { addProduct, updateProduct, fetchProducts } from '../redux/productsSlice';
-import { useNavigate } from 'react-router-dom';
+import { addUser, updateUser } from '../redux/userSlice';
 
-const ProductForm = ({ currentProduct, setCurrentProduct, categories = [] }) => {
-  const [product, setProduct] = useState({
+const UserForm = ({ currentUser, setCurrentUser }) => {
+  const [user, setUser] = useState({
     name: '',
-    description: '',
-    price: '',
-    stock: '',
-    imageUrl: '',
-    categoryId: '',
-    isStatus: false // Status durumu için eklenen alan
+    email: '',
+    address: ''
   });
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   useEffect(() => {
-    if (currentProduct) {
-      setProduct(currentProduct);
+    if (currentUser) {
+      setUser(currentUser);
     } else {
-      setProduct({
+      setUser({
         name: '',
-        description: '',
-        price: '',
-        stock: '',
-        imageUrl: '',
-        categoryId: '',
-        isStatus: false // Status durumu sıfırlanır
+        email: '',
+        address: ''
       });
     }
-  }, [currentProduct]);
+  }, [currentUser]);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setProduct({
-      ...product,
-      [name]: type === 'checkbox' ? checked : value,
+    const { name, value } = e.target;
+    setUser({
+      ...user,
+      [name]: value,
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (currentProduct) {
-      dispatch(updateProduct(product))
+    if (currentUser) {
+      dispatch(updateUser(user))
         .unwrap()
         .then(() => {
-          Swal.fire('Updated!', 'Product has been updated.', 'success');
-          setCurrentProduct(null); // Güncelleme başarılı olduğunda formu temizle
-          dispatch(fetchProducts()); // Ürünler listesini güncelle
+          Swal.fire('Updated!', 'User has been updated.', 'success');
+          setCurrentUser(null); // Güncelleme başarılı olduğunda formu temizle
         })
         .catch((error) => {
           Swal.fire('Error!', error.message, 'error');
         });
     } else {
-      dispatch(addProduct(product))
+      dispatch(addUser(user))
         .unwrap()
         .then(() => {
-          Swal.fire('Added!', 'Product has been added.', 'success');
-          setProduct({ // Ürün eklendikten sonra formu temizle
-            name: '',
-            description: '',
-            price: '',
-            stock: '',
-            imageUrl: '',
-            categoryId: '',
-            isStatus: false // Status durumu sıfırlanır
-          });
-          dispatch(fetchProducts()); // Ürünler listesini güncelle
+          Swal.fire('Added!', 'User has been added.', 'success');
         })
         .catch((error) => {
           Swal.fire('Error!', error.message, 'error');
@@ -78,53 +57,30 @@ const ProductForm = ({ currentProduct, setCurrentProduct, categories = [] }) => 
     }
   };
 
-  const handleCancel = () => {
-    setCurrentProduct(null);
-    navigate('/product-management/update');
-  }
-
   return (
-    <Card className="product-form-card">
+    <Card className="user-form-card">
       <CardBody>
-        <CardTitle tag="h5">{currentProduct ? 'Update Product' : 'Add Product'}</CardTitle>
-        <CardSubtitle className="mb-3">{currentProduct ? 'Update the product details below.' : 'Fill out the form below to add a new product.'}</CardSubtitle>
+        <CardTitle tag="h5">{currentUser ? 'Update User' : 'Add User'}</CardTitle>
+        <CardSubtitle className="mb-3">{currentUser ? 'Update the user details below.' : 'Fill out the form below to add a new user.'}</CardSubtitle>
         <Form onSubmit={handleSubmit}>
           <FormGroup>
             <Label for="name">Name</Label>
-            <Input type="text" name="name" id="name" value={product.name} onChange={handleChange} required />
+            <Input type="text" name="name" id="name" value={user.name} onChange={handleChange} required />
           </FormGroup>
           <FormGroup>
-            <Label for="description">Description</Label>
-            <Input type="text" name="description" id="description" value={product.description} onChange={handleChange} required />
+            <Label for="email">Email</Label>
+            <Input type="email" name="email" id="email" value={user.email} onChange={handleChange} required />
           </FormGroup>
           <FormGroup>
-            <Label for="price">Price</Label>
-            <Input type="number" name="price" id="price" value={product.price} onChange={handleChange} required />
+            <Label for="address">Address</Label>
+            <Input type="text" name="address" id="address" value={user.address} onChange={handleChange} required />
           </FormGroup>
-          <FormGroup>
-            <Label for="stock">Stock</Label>
-            <Input type="number" name="stock" id="stock" value={product.stock} onChange={handleChange} required />
-          </FormGroup>
-          <FormGroup>
-            <Label for="imageUrl">Image URL</Label>
-            <Input type="text" name="imageUrl" id="imageUrl" value={product.imageUrl} onChange={handleChange} required />
-            {product.imageUrl && (
-              <img src={product.imageUrl} alt="Product Preview" style={{ marginTop: '10px', maxHeight: '200px' }} />
-            )}
-          </FormGroup>
-          <FormGroup check>
-            <Label check>
-              <Input type="checkbox" name="isStatus" id="isStatus" checked={product.isStatus} onChange={handleChange} />
-              {' '}
-              Active
-            </Label>
-          </FormGroup>
-          <Button type="submit" color="primary" className="mr-2">{currentProduct ? 'Update' : 'Add'} Product</Button>
-          <Button type="button" color="secondary" onClick={handleCancel}>Cancel</Button>
+          <Button type="submit" color="primary" className="mr-2">{currentUser ? 'Update' : 'Add'} User</Button>
+          <Button type="button" color="secondary" onClick={() => setCurrentUser(null)}>Cancel</Button>
         </Form>
       </CardBody>
     </Card>
   );
 };
 
-export default ProductForm;
+export default UserForm;

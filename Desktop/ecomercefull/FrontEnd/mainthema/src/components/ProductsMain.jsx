@@ -27,7 +27,6 @@ export default function ProductsMain() {
             <div className="product-action">
               <a className="btn btn-outline-dark btn-square" href="#"><i className="fa fa-shopping-cart"></i></a>
               <a className="btn btn-outline-dark btn-square" href="#"><i className="far fa-heart"></i></a>
-              <a className="btn btn-outline-dark btn-square" href="#"><i className="fa fa-sync-alt"></i></a>
               <a className="btn btn-outline-dark btn-square" href="#"><i className="fa fa-search"></i></a>
             </div>
           </div>

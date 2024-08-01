@@ -96,9 +96,18 @@ const ProductForm = ({ currentProduct, setCurrentProduct, categories = [] }) => 
             <Input type="text" name="name" id="name" value={product.name} onChange={handleChange} required />
           </FormGroup>
           <FormGroup>
-            <Label for="description">Description</Label>
-            <Input type="text" name="description" id="description" value={product.description} onChange={handleChange} required />
+            <Label for="description">Description (You can enter single or multiple size and color.) </Label>
+            <Input
+              type="text"
+              name="description"
+              id="description"
+              value={product.description}
+              onChange={handleChange}
+              placeholder='Color: Black, White | Sizes: S, M, L | Description.'
+              required
+            />
           </FormGroup>
+
           <FormGroup>
             <Label for="price">Price</Label>
             <Input type="number" name="price" id="price" value={product.price} onChange={handleChange} required />
@@ -111,13 +120,13 @@ const ProductForm = ({ currentProduct, setCurrentProduct, categories = [] }) => 
             <Label for="imageUrl">Image URL</Label>
             <Input type="text" name="imageUrl" id="imageUrl" value={product.imageUrl} onChange={handleChange} required />
             {product.imageUrl && (
-              <img src={product.imageUrl} 
-              alt="Product" 
-              className="img-fluid mt-2" 
-              style={{ marginTop: '10px', maxHeight: '200px' }}
-          />
+              <img src={product.imageUrl}
+                alt="Product"
+                className="img-fluid mt-2"
+                style={{ marginTop: '10px', maxHeight: '200px' }}
+              />
             )}
-          
+
           </FormGroup>
           <FormGroup>
             <Label for="categoryId">Category</Label>

@@ -45,7 +45,7 @@ namespace ecommercefull.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutShoppingCart(int id, ShoppingCart shoppingCart)
         {
-            
+
             _context.Entry(shoppingCart).State = EntityState.Modified;
 
             try
@@ -68,14 +68,32 @@ namespace ecommercefull.Controllers
         }
 
         // POST: api/ShoppingCarts
+        // POST: api/ShoppingCarts
         [HttpPost]
         public async Task<ActionResult<ShoppingCart>> PostShoppingCart(ShoppingCart shoppingCart)
         {
+            // Product kontrolü
+            if (shoppingCart.Product == null)
+            {
+                return BadRequest(new { message = "The Product field is required." });
+            }
+
+            // Optional: ProductId üzerinden de kontrol yapılabilir
+            var product = await _context.Products.FindAsync(shoppingCart.ProductId);
+            if (product == null)
+            {
+                return BadRequest(new { message = "Invalid ProductId" });
+            }
+
+            // Product bilgisi veritabanından alındıktan sonra eklenebilir
+            shoppingCart.Product = product;
+
             _context.ShoppingCarts.Add(shoppingCart);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetShoppingCart", new { id = shoppingCart.Id }, shoppingCart);
         }
+
 
         // DELETE: api/ShoppingCarts/5
         [HttpDelete("{id}")]
@@ -92,6 +110,22 @@ namespace ecommercefull.Controllers
 
             return NoContent();
         }
+        // DELETE: api/ShoppingCarts
+        [HttpDelete]
+        public async Task<IActionResult> ClearShoppingCarts()
+        {
+            var allCarts = await _context.ShoppingCarts.ToListAsync();
+            if (allCarts.Count == 0)
+            {
+                return NotFound(new { message = "There are no items in the cart to delete." });
+            }
+
+            _context.ShoppingCarts.RemoveRange(allCarts);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
 
         private bool ShoppingCartExists(int id)
         {

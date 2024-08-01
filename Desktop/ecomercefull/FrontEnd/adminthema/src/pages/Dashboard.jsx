@@ -1,31 +1,42 @@
+import React from 'react';
 import { Container, Row, Col } from 'reactstrap';
-import TotalProduct from '../components/TotalProduct'; // TotalProduct bileşenini içe aktar
+import TotalProduct from '../components/TotalProduct';
 import TotalCategory from '../components/TotalCategory';
 import TotalUser from '../components/TotalUser';
 import TotalOrders from '../components/TotalOrders';
+import SalesChart from '../components/SalesChart';
+import RecentActivities from '../components/RecentActivities';
+import Footer from '../components/Footer';
 
 const Dashboard = () => {
-
-
   return (
-    <Container>
+    <div className="d-flex flex-column min-vh-100">
+      <Container className="flex-grow-1">
         <h2>Services</h2>
-      <Row>
-        <Col md="3">
-          <TotalCategory />
-        </Col>
-        <Col md="3">
-          <TotalProduct />
-        </Col>
-        <Col md="3">
-          <TotalUser/>
-        </Col>
-        <Col md="3">
-          <TotalOrders/> 
-        </Col>
-      </Row>
-      <h3></h3>
-    </Container>
+        <Row>
+          <Col md="3">
+            <TotalCategory />
+          </Col>
+          <Col md="3">
+            <TotalProduct />
+          </Col>
+          <Col md="3">
+            <TotalUser />
+          </Col>
+          <Col md="3">
+            <TotalOrders />
+          </Col>
+        </Row>
+        <Row className="mt-4">
+          <Col md="8">
+            <SalesChart />
+          </Col>
+          <Col md="4">
+            <RecentActivities />
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 };
 

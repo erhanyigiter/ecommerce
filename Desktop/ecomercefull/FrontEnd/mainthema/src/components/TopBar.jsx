@@ -23,11 +23,11 @@ export default function TopBar() {
             </div>
           </div>
           <div className="d-inline-flex align-items-center d-block d-lg-none">
-            <a href="#" className="btn px-0 ml-2">
+            <a href="/" className="btn px-0 ml-2">
               <i className="fas fa-heart text-dark"></i>
               <span className="badge text-dark border border-dark rounded-circle" style={{ paddingBottom: '2px' }}>0</span>
             </a>
-            <a href="#" className="btn px-0 ml-2">
+            <a href="/" className="btn px-0 ml-2">
               <i className="fas fa-shopping-cart text-dark"></i>
               <span className="badge text-dark border border-dark rounded-circle" style={{ paddingBottom: '2px' }}>0</span>
             </a>
@@ -36,7 +36,7 @@ export default function TopBar() {
       </div>
       <div className="row align-items-center bg-light py-3 px-xl-5 d-none d-lg-flex">
         <div className="col-lg-4">
-          <a href="#" className="text-decoration-none">
+          <a href="/" className="text-decoration-none">
             <span className="h1 text-uppercase text-primary bg-dark px-2">Multi</span>
             <span className="h1 text-uppercase text-dark bg-primary px-2 ml-n1">Shop</span>
           </a>

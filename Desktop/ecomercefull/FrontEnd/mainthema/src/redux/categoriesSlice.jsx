@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export const fetchCategories = createAsyncThunk('categories/fetchCategories', async () => {
   const response = await axios.get('http://localhost:5220/api/Categories');
-  return response.data.filter((category) => !category.isActive);
+  return response.data.filter((category) => category.isStatus && category.isDeleted === false);
 });
 
 const categoriesSlice = createSlice({

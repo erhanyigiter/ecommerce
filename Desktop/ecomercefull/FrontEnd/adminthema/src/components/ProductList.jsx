@@ -1,19 +1,23 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Table, Button } from 'reactstrap';
-import { fetchProducts, deleteProduct } from '../redux/productsSlice';
+import { Button, Table, Card, CardBody, Row, Col, CardTitle } from 'reactstrap';
 import Swal from 'sweetalert2';
+import { fetchProducts, deleteProduct } from '../redux/productsSlice';
+import { fetchCategories } from '../redux/categoriesSlice';
 import { useNavigate } from 'react-router-dom';
+import { FaInfoCircle } from 'react-icons/fa'; 
 
 const ProductList = ({ setCurrentProduct }) => {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.products);
+  const categories = useSelector((state) => state.categories.categories); 
   const status = useSelector((state) => state.products.status);
   const error = useSelector((state) => state.products.error);
 
   useEffect(() => {
     if (status === 'idle') {
-      dispatch(fetchProducts()); // Ürünleri yükleme işlemi başlatılıyor
+      dispatch(fetchProducts());
+      dispatch(fetchCategories());
     }
   }, [status, dispatch]);
 
@@ -31,17 +35,17 @@ const ProductList = ({ setCurrentProduct }) => {
         dispatch(deleteProduct(id))
           .unwrap()
           .then(() => {
-            Swal.fire('Deleted!', 'Product has been deleted.', 'success'); // Ürün başarıyla silindiğinde bildirim
+            Swal.fire('Deleted!', 'Product has been deleted.', 'success');
           })
           .catch((error) => {
-            Swal.fire('Error!', error.message, 'error'); // Hata mesajı
+            Swal.fire('Error!', error.message, 'error');
           });
       }
     });
   };
 
   const handleEdit = (product) => {
-    setCurrentProduct(product); // Ürün düzenleme işlemi için setCurrentProduct fonksiyonu çağrılıyor
+    setCurrentProduct(product);
   };
 
   const navigate = useNavigate();
@@ -53,14 +57,14 @@ const ProductList = ({ setCurrentProduct }) => {
   let content;
 
   if (status === 'loading') {
-    content = <div>Loading...</div>; // Ürünler yüklenirken gösterilecek mesaj
+    content = <div>Loading...</div>;
   } else if (status === 'succeeded') {
     content = (
       <Table striped>
         <thead>
           <tr>
             <th>Category</th>
-            <th>Name</th>
+            <th>Product</th>
             <th>Description</th>
             <th>Price</th>
             <th>Stock</th>
@@ -70,28 +74,33 @@ const ProductList = ({ setCurrentProduct }) => {
           </tr>
         </thead>
         <tbody>
-          {products.map((product) => (
-            <tr key={product.id}>
-              <td>{product.categoryId}</td>
-              <td>{product.name}</td>
-              <td>{product.description}</td>
-              <td>{product.price}</td>
-              <td>{product.stock}</td>
-              <td>
-                <img
-                  src={product.imageUrl}
-                  alt={product.name}
-                  style={{ width: '50px', height: '50px', objectFit: 'cover' }}
-                />
-              </td>
-              <td>{product.isStatus ? 'Active' : 'Inactive'}</td>
-              <td>
-                <Button color="warning" onClick={() => handleEdit(product)}>Edit</Button>{' '}
-                <Button color="danger" onClick={() => handleDelete(product.id)}>Delete</Button>
-                <Button color="secondary" onClick={handleCancel} className="ml-2">Cancel</Button>
-              </td>
-            </tr>
-          ))}
+          {products.map((product) => {
+            const category = categories.find(cat => cat.id === product.categoryId); // Kategori ID'si eşleştiriliyor
+            return (
+              <tr key={product.id}>
+                <td>{category ? category.name : 'Unknown Category'}</td>
+                <td>{product.name}</td>
+                <td>{product.description}</td>
+                <td>{product.price}</td>
+                <td>{product.stock}</td>
+                <td>
+                  <img
+                    src={product.imageUrl}
+                    alt={product.name}
+                    style={{ width: '50px', height: '50px', objectFit: 'cover' }}
+                  />
+                </td>
+                <td style={{ color: product.isStatus ? 'green' : 'red' }}>
+                  {product.isStatus ? 'Active' : 'Passive'}
+                </td>
+                <td>
+                  <Button color="warning" onClick={() => handleEdit(product)}>Edit</Button>{' '}
+                  <Button color="danger" onClick={() => handleDelete(product.id)}>Delete</Button>
+                  <Button color="secondary" onClick={handleCancel} className="ml-2">Cancel</Button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
     );
@@ -99,7 +108,31 @@ const ProductList = ({ setCurrentProduct }) => {
     content = <div>{error}</div>; 
   }
 
-  return <div>{content}</div>;
+  return (
+    <div>
+      {content}
+      <Row className="mt-4">
+        <Col md="12">
+          <Card className="shadow-sm border-10">
+            <CardBody>
+              <div className="d-flex align-items-center mb-3">
+                <FaInfoCircle className="text-primary me-2" size={30} />
+                <CardTitle tag="h5" className="mb-0">Information</CardTitle>
+              </div>
+              <div>
+                <ul>
+                  <li>If you set the status of the products passive, your published products will be suspended.</li>
+                  <li>When adding product, its description should be like this; <br></br> "Color: Black, White | Sizes: S, M, L | Elegant and versatile shirt, suitable for all occasions."
+                <br></br>  Because your products gain the filtering feature in this way.
+                  </li>
+                </ul>
+              </div>
+            </CardBody>
+          </Card>
+        </Col>
+      </Row>
+    </div>
+  );
 };
 
 export default ProductList;

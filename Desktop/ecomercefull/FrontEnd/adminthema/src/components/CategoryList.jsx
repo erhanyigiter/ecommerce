@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button, Table } from 'reactstrap';
+import { Button, Table, Card, CardBody, Row, Col, CardTitle } from 'reactstrap';
 import Swal from 'sweetalert2';
 import { fetchCategories, deleteCategory } from '../redux/categoriesSlice';
 import { useNavigate } from 'react-router-dom';
+import { FaInfoCircle } from 'react-icons/fa';
 
 const CategoryList = ({ setCurrentCategory }) => {
   const dispatch = useDispatch();
@@ -48,7 +49,7 @@ const CategoryList = ({ setCurrentCategory }) => {
   const handleCancel = () => {
     setCurrentCategory(null);
     navigate('/dashboard');
-  }
+  };
 
   let content;
 
@@ -56,10 +57,11 @@ const CategoryList = ({ setCurrentCategory }) => {
     content = <div>Loading...</div>;
   } else if (status === 'succeeded') {
     content = (
-      <Table striped>
+      <Table striped responsive>
         <thead>
           <tr>
-            <th>Name</th>
+            <th>ID</th>
+            <th>Category</th>
             <th>Description</th>
             <th>Image</th> 
             <th>Status</th>
@@ -69,12 +71,14 @@ const CategoryList = ({ setCurrentCategory }) => {
         <tbody>
           {categories.map((category) => (
             <tr key={category.id}>
+              <td>{category.id}</td>
               <td>{category.name}</td>
               <td>{category.description}</td>
-              
               <td><img src={category.imageUrl} alt={category.name} width="50" height="50" /></td> 
-              <td>{category.isStatus ? 'Active' : 'Passive'}</td>
-
+              <td 
+                style={{ color: category.isStatus ? 'green' : 'red' }}>
+                {category.isStatus ? 'Active' : 'Passive'}
+                </td>
               <td>
                 <Button color="warning" onClick={() => handleEdit(category)}>Edit</Button>
                 {' '}
@@ -91,7 +95,30 @@ const CategoryList = ({ setCurrentCategory }) => {
     content = <div>{error}</div>;
   }
 
-  return <div>{content}</div>;
+  return (
+    <div>
+      {content}
+      <Row className="mt-4">
+        <Col md="12">
+          <Card className="shadow-sm border-10">
+            <CardBody>
+              <div className="d-flex align-items-center mb-3">
+                <FaInfoCircle className="text-primary me-2" size={30} />
+                <CardTitle tag="h5" className="mb-0">Information</CardTitle>
+              </div>
+              <div> 
+                <ul>
+                  <li>If you set the category status to passive, your published categories will be suspended.</li>
+                  <li>If you set the category status to passive, your published products will be suspended.</li>
+                  <li>Before trying to delete a category, please make sure there are no products in that category.</li>
+                </ul>
+              </div>
+            </CardBody>
+          </Card>
+        </Col>
+      </Row>
+    </div>
+  );
 };
 
 export default CategoryList;
