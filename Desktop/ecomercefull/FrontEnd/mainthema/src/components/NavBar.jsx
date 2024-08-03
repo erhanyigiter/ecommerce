@@ -7,6 +7,7 @@ const NavBar = () => {
   const [isCategoriesOpen, setCategoriesOpen] = useState(false);
   const dispatch = useDispatch();
   const { categories } = useSelector((state) => state.categories);
+  const { items } = useSelector((state) => state.shoppingCart);
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -66,11 +67,15 @@ const NavBar = () => {
               <div className="navbar-nav ml-auto py-0 d-none d-lg-block">
                 <Link to="/wishlist" className="btn px-0">
                   <i className="fas fa-heart text-primary"></i>
-                  <span className="badge text-secondary border border-secondary rounded-circle" style={{ paddingBottom: '2px' }}>0</span>
+                  <span className="badge text-secondary border border-secondary rounded-circle" style={{ paddingBottom: '2px' }}>
+                    0
+                  </span>
                 </Link>
                 <Link to="/cart" className="btn px-0 ml-3">
                   <i className="fas fa-shopping-cart text-primary"></i>
-                  <span className="badge text-secondary border border-secondary rounded-circle" style={{ paddingBottom: '2px' }}>0</span>
+                  <span className="badge text-secondary border border-secondary rounded-circle" style={{ paddingBottom: '2px' }}>
+                    {items.length}
+                  </span>
                 </Link>
               </div>
             </div>

@@ -1,23 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { addItemToCart } from '../redux/shoppingCartSlice';
 import YouMayAlsoLike from '../components/YouMayAlsoLike';
+import { fetchProducts } from '../redux/productsSlice';
 import alertify from 'alertifyjs';
 import 'alertifyjs/build/css/alertify.css';
 
 const ProductDetailsPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedColor, setSelectedColor] = useState('');
+  const [quantity, setQuantity] = useState(1);
   const product = useSelector((state) => state.products.products.find(product => product.id === parseInt(id)));
+  const cartItems = useSelector((state) => state.shoppingCart.items);
+
+  useEffect(() => {
+    if (!product) {
+      dispatch(fetchProducts());
+    }
+  }, [product, dispatch]);
+
+  useEffect(() => {
+    if (product) {
+      setSelectedSize(product.sizes && product.sizes[0] ? product.sizes[0] : '');
+      setSelectedColor(product.colors && product.colors[0] ? product.colors[0] : '');
+    }
+  }, [product]);
 
   if (!product) {
     return <div>Product not found</div>;
   }
-
-  const [selectedSize, setSelectedSize] = useState(product.sizes && product.sizes[0] ? product.sizes[0] : '');
-  const [selectedColor, setSelectedColor] = useState(product.colors && product.colors[0] ? product.colors[0] : '');
-  const [quantity, setQuantity] = useState(1);
 
   // Ürün açıklamasından renk ve beden bilgilerini ayrıştır
   const description = product.description || '';
@@ -28,6 +42,20 @@ const ProductDetailsPage = () => {
   const sizes = description.match(sizePattern) ? description.match(sizePattern)[1].split(',').map(s => s.trim()) : [];
 
   const handleAddToCart = () => {
+    // Sepetteki ürünleri kontrol et
+    const existingCartItem = cartItems.find(
+      (item) => item.product.id === product.id && item.product.description === `Size: ${selectedSize}, Color: ${selectedColor}`
+    );
+
+    // Sepetteki mevcut miktarı ve eklenmek istenen miktarı kontrol et
+    const totalQuantityInCart = existingCartItem ? existingCartItem.quantity + quantity : quantity;
+
+    // Toplam miktar stoktan fazlaysa hata mesajı göster
+    if (totalQuantityInCart > product.stock) {
+      alertify.error('Cannot add more than available stock.');
+      return;
+    }
+
     // Sepete ekleme işlemi
     const cartItem = {
       productId: product.id,
@@ -77,14 +105,6 @@ const ProductDetailsPage = () => {
         <div className="col-lg-7 h-auto mb-30">
           <div className="h-100 bg-light p-30">
             <h3>{product.name}</h3>
-            <div className="d-flex mb-3">
-              <div className="text-primary mr-2">
-                {[...Array(5)].map((_, index) => (
-                  <small key={index} className={`fas fa-star ${index < product.rating ? 'text-primary' : ''}`}></small>
-                ))}
-              </div>
-              <small className="pt-1">({product.reviews} Reviews)</small>
-            </div>
             <h3 className="font-weight-semi-bold mb-4">${product.price}</h3>
             <p className="mb-4">{product.description}</p>
 
@@ -94,9 +114,14 @@ const ProductDetailsPage = () => {
                 {sizes.length > 0 ? (
                   sizes.map((size, index) => (
                     <div key={index} className="custom-control custom-radio custom-control-inline">
-                      <input type="radio" className="custom-control-input" id={`size-${index}`} name="size"
+                      <input
+                        type="radio"
+                        className="custom-control-input"
+                        id={`size-${index}`}
+                        name="size"
                         checked={selectedSize === size}
-                        onChange={() => setSelectedSize(size)} />
+                        onChange={() => setSelectedSize(size)}
+                      />
                       <label className="custom-control-label" htmlFor={`size-${index}`}>
                         {size}
                       </label>
@@ -114,9 +139,14 @@ const ProductDetailsPage = () => {
                 {colors.length > 0 ? (
                   colors.map((color, index) => (
                     <div key={index} className="custom-control custom-radio custom-control-inline">
-                      <input type="radio" className="custom-control-input" id={`color-${index}`} name="color"
+                      <input
+                        type="radio"
+                        className="custom-control-input"
+                        id={`color-${index}`}
+                        name="color"
                         checked={selectedColor === color}
-                        onChange={() => setSelectedColor(color)} />
+                        onChange={() => setSelectedColor(color)}
+                      />
                       <label className="custom-control-label" htmlFor={`color-${index}`}>
                         {color}
                       </label>
@@ -136,7 +166,12 @@ const ProductDetailsPage = () => {
                     <i className="fa fa-minus"></i>
                   </button>
                 </div>
-                <input type="text" className="form-control bg-secondary border-0 text-center" value={quantity} readOnly />
+                <input
+                  type="text"
+                  className="form-control bg-secondary border-0 text-center"
+                  value={quantity}
+                  readOnly
+                />
                 <div className="input-group-btn">
                   <button className="btn btn-primary btn-plus" onClick={() => setQuantity(quantity < product.stock ? quantity + 1 : quantity)}>
                     <i className="fa fa-plus"></i>

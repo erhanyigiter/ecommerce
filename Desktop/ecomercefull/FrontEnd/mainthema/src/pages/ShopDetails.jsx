@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../redux/productsSlice';
 import { Container, Row, Col, Card, CardBody, Button, Form, FormGroup, Input, Label } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 const ShopDetails = () => {
   const dispatch = useDispatch();
@@ -232,54 +233,43 @@ const ShopDetails = () => {
             ) : (
               filteredProducts.map((product) => (
                 <Col key={product.id} lg="4" md="6" sm="6" className="mb-4">
-                  <Card className="product-item bg-light">
-                    <div className="product-img position-relative overflow-hidden">
-                      <img
-                        className="img-fluid w-100"
-                        src={product.imageUrl}
-                        alt={product.name}
-                      />
-                      <div className="product-action">
-                        <Button color="outline-dark" className="btn-square">
-                          <i className="fa fa-shopping-cart"></i>
-                        </Button>
-                        <Button color="outline-dark" className="btn-square">
-                          <i className="far fa-heart"></i>
-                        </Button>
-                        <Button color="outline-dark" className="btn-square">
-                          <i className="fa fa-sync-alt"></i>
-                        </Button>
-                        <Button color="outline-dark" className="btn-square">
-                          <i className="fa fa-search"></i>
-                        </Button>
+                  <Link to={`/product/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <Card className="product-item bg-light">
+                      <div className="product-img position-relative overflow-hidden" style={{ height: '300px' }}>
+                        <img
+                          className="img-fluid w-100 h-100"
+                          src={product.imageUrl}
+                          alt={product.name}
+                          style={{ objectFit: 'cover' }}
+                        />
                       </div>
-                    </div>
-                    <CardBody className="text-center">
-                      <h6 className="text-truncate">{product.name}</h6>
-                      <div className="d-flex align-items-center justify-content-center mt-2">
-                        <h5>${product.price}</h5>
-                        {product.originalPrice && (
-                          <h6 className="text-muted ml-2">
-                            <del>${product.originalPrice}</del>
-                          </h6>
-                        )}
-                      </div>
-                      <div className="d-flex align-items-center justify-content-center mb-1">
-                        {Array(product.rating)
-                          .fill()
-                          .map((_, i) => (
-                            <small key={i} className="fa fa-star text-primary mr-1"></small>
-                          ))}
-                        {product.rating < 5 &&
-                          Array(5 - product.rating)
+                      <CardBody className="text-center">
+                        <h6 className="text-truncate">{product.name}</h6>
+                        <div className="d-flex align-items-center justify-content-center mt-2">
+                          <h5>${product.price}</h5>
+                          {product.originalPrice && (
+                            <h6 className="text-muted ml-2">
+                              <del>${product.originalPrice}</del>
+                            </h6>
+                          )}
+                        </div>
+                        {/* <div className="d-flex align-items-center justify-content-center mb-1">
+                          {Array(product.rating)
                             .fill()
                             .map((_, i) => (
-                              <small key={i} className="far fa-star text-primary mr-1"></small>
+                              <small key={i} className="fa fa-star text-primary mr-1"></small>
                             ))}
-                        <small>({product.numReviews})</small>
-                      </div>
-                    </CardBody>
-                  </Card>
+                          {product.rating < 5 &&
+                            Array(5 - product.rating)
+                              .fill()
+                              .map((_, i) => (
+                                <small key={i} className="far fa-star text-primary mr-1"></small>
+                              ))}
+                          <small>({product.numReviews})</small>
+                        </div> */}
+                      </CardBody>
+                    </Card>
+                  </Link>
                 </Col>
               ))
             )}

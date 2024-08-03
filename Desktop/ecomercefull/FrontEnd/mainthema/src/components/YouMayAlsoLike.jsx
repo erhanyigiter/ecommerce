@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 const YouMayAlsoLike = ({ currentProductId }) => {
   const products = useSelector((state) => state.products.products);
@@ -7,18 +8,16 @@ const YouMayAlsoLike = ({ currentProductId }) => {
   const [randomProducts, setRandomProducts] = useState([]);
 
   useEffect(() => {
-    console.log('Products:', products); // Verileri kontrol etmek için
-    console.log('Current Product ID:', currentProductId);
-
     if (status === 'succeeded' && products.length > 0) {
+      // currentProductId ile eşleşmeyen ürünleri filtrele
       const otherProducts = products.filter((product) => product.id !== currentProductId);
-      console.log('Other Products:', otherProducts); // Filtered products
 
-      if (otherProducts.length === 0 && products.length > 0) {
-        setRandomProducts([products[0]]); // Mevcut ürünü göster
-      } else {
+      // Diğer ürünler arasından rastgele ürünler seç
+      if (otherProducts.length > 0) {
         const shuffledProducts = [...otherProducts].sort(() => 0.5 - Math.random());
         setRandomProducts(shuffledProducts.slice(0, Math.min(4, shuffledProducts.length)));
+      } else {
+        setRandomProducts(products);
       }
     }
   }, [products, status, currentProductId]);
@@ -33,41 +32,25 @@ const YouMayAlsoLike = ({ currentProductId }) => {
         <span className="bg-secondary pr-3">You May Also Like</span>
       </h2>
       <div className="row px-xl-5">
-        <div className="col">
-          <div className="owl-carousel related-carousel">
-            {randomProducts.length > 0 ? (
-              randomProducts.map((product) => (
-                <div className="product-item bg-light" key={product.id}>
+        {randomProducts.length > 0 ? (
+          randomProducts.map((product) => (
+            <div className="col-lg-3 col-md-4 col-sm-6 mb-4" key={product.id}>
+              <div className="product-item bg-light h-100" style={{ cursor: 'pointer' }}>
+                <Link to={`/product/${product.id}`} className="text-decoration-none">
                   <div className="product-img position-relative overflow-hidden">
-                    <img className="img-fluid w-100" src={product.imageUrl} alt={product.name} />
-                    <div className="product-action">
-                      <a className="btn btn-outline-dark btn-square" href="#">
-                        <i className="fa fa-shopping-cart"></i>
-                      </a>
-                      <a className="btn btn-outline-dark btn-square" href="#">
-                        <i className="far fa-heart"></i>
-                      </a>
-                      <a className="btn btn-outline-dark btn-square" href="#">
-                        <i className="fa fa-sync-alt"></i>
-                      </a>
-                      <a className="btn btn-outline-dark btn-square" href="#">
-                        <i className="fa fa-search"></i>
-                      </a>
-                    </div>
+                    <img className="img-fluid w-100" src={product.imageUrl} alt={product.name} style={{ objectFit: 'cover', height: '250px' }} />
                   </div>
                   <div className="text-center py-4">
-                    <a className="h6 text-decoration-none text-truncate" href="#">
-                      {product.name}
-                    </a>
+                    <div className="h6 text-decoration-none text-truncate">{product.name}</div>
                     <div className="d-flex align-items-center justify-content-center mt-2">
                       <h5>${product.price}</h5>
-                      {product.oldPrice && (
-                        <h6 className="text-muted ml-2">
-                          <del>${product.oldPrice}</del>
-                        </h6>
-                      )}
                     </div>
-                    <div className="d-flex align-items-center justify-content-center mb-1">
+                    <div className="product-description mt-2">
+                      <p className="text-muted small mb-0" style={{ height: '50px', overflow: 'hidden' }}>
+                        {product.description.length > 50 ? product.description.slice(0, 50) + '...' : product.description}
+                      </p>
+                    </div>
+                    {/* <div className="d-flex align-items-center justify-content-center mb-1">
                       {[...Array(5)].map((_, index) => (
                         <small
                           className={`fa fa-star ${index < product.rating ? 'text-primary' : 'text-secondary'}`}
@@ -75,15 +58,15 @@ const YouMayAlsoLike = ({ currentProductId }) => {
                         ></small>
                       ))}
                       <small>({product.reviews})</small>
-                    </div>
+                    </div> */}
                   </div>
-                </div>
-              ))
-            ) : (
-              <div>No products to show</div>
-            )}
-          </div>
-        </div>
+                </Link>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div>No products to show</div>
+        )}
       </div>
     </div>
   );

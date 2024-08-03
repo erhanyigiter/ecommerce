@@ -30,6 +30,12 @@ const CartPage = () => {
   };
 
   const handleQuantityChange = async (item, newQuantity) => {
+    // Stok kontrolü
+    if (newQuantity > item.product.stock) {
+      alertify.error('Cannot add more than available stock.');
+      return;
+    }
+  
     if (newQuantity <= 0) {
       await dispatch(removeItemFromCart(item.id));
     } else {
@@ -38,7 +44,6 @@ const CartPage = () => {
     }
     dispatch(fetchShoppingCart()); // Güncellenen veriyi yeniden yüklemek için
   };
-
   // Ürünleri birleştirme ve miktarlarını toplama
   const mergedItems = items.reduce((acc, item) => {
     const existingItem = acc.find(i => i.product.id === item.product.id && i.product.description === item.product.description);
