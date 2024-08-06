@@ -1,3 +1,4 @@
+// App.js
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import MainPage from "./pages/MainPage";
@@ -12,23 +13,19 @@ import CartPage from "./pages/CartPage";
 import CheckOut from "./pages/CheckOut";
 import Wishlist from "./pages/Whislist";
 
-
 function App() {
   return (
     <>
       <TopBar />
       <NavBar />
       <Routes>
-        {/* Anasayfa için rota */}
         <Route path="/" element={<MainPage />} />
-        {/* Ürün detayları sayfası için rota */}
         <Route path="/product/:id" element={<ProductDetailsPage />} />
-        {/* Diğer sayfalar için ek rotalar burada tanımlanabilir */}
-        <Route path="/shop" element={<ShopDetails/>} />
+        <Route path="/shop" element={<ShopDetails />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckOut />} />
-        <Route path="/wishlist" element={<Wishlist />} />  
+        <Route path="/wishlist" element={<Wishlist />} />
       </Routes>
       <Footer />
       <BackToTop />

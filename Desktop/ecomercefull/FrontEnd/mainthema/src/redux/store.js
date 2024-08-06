@@ -3,6 +3,7 @@ import categoriesReducer from './categoriesSlice';
 import productsReducer from './productsSlice';
 import shoppingCartReducer from './shoppingCartSlice';
 import wishlistReducer from './wishlistSlice';
+import paymentSliceReducer from './paymentSlice';
 
 export default configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export default configureStore({
     products: productsReducer,
     shoppingCart: shoppingCartReducer,
     wishlist: wishlistReducer,
+    payment: paymentSliceReducer,
 
   },
 });

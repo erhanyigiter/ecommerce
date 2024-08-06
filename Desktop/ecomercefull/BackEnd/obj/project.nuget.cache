@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "rfAvcaXl20w=",
+  "dgSpecHash": "+1gRUWd9MIE=",
   "success": true,
   "projectFilePath": "/Users/erhanyigiter/Desktop/ecomercefull/BackEnd/ecomercefull.csproj",
   "expectedPackageFiles": [
@@ -50,6 +50,8 @@
     "/Users/erhanyigiter/.nuget/packages/microsoft.sqlserver.server/1.0.0/microsoft.sqlserver.server.1.0.0.nupkg.sha512",
     "/Users/erhanyigiter/.nuget/packages/microsoft.win32.systemevents/6.0.0/microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "/Users/erhanyigiter/.nuget/packages/mono.texttemplating/2.2.1/mono.texttemplating.2.2.1.nupkg.sha512",
+    "/Users/erhanyigiter/.nuget/packages/newtonsoft.json/12.0.3/newtonsoft.json.12.0.3.nupkg.sha512",
+    "/Users/erhanyigiter/.nuget/packages/stripe.net/45.6.0/stripe.net.45.6.0.nupkg.sha512",
     "/Users/erhanyigiter/.nuget/packages/swashbuckle.aspnetcore/6.4.0/swashbuckle.aspnetcore.6.4.0.nupkg.sha512",
     "/Users/erhanyigiter/.nuget/packages/swashbuckle.aspnetcore.swagger/6.4.0/swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",
     "/Users/erhanyigiter/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.4.0/swashbuckle.aspnetcore.swaggergen.6.4.0.nupkg.sha512",

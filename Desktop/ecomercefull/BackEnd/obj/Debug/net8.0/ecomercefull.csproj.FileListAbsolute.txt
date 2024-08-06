@@ -278,3 +278,5 @@
 /Users/erhanyigiter/Desktop/ecomercefull/BackEnd/obj/Debug/net8.0/ecomercefull.genruntimeconfig.cache
 /Users/erhanyigiter/Desktop/ecomercefull/BackEnd/obj/Debug/net8.0/ref/ecomercefull.dll
 /Users/erhanyigiter/Desktop/ecomercefull/BackEnd/obj/Debug/net8.0/ecomercefull.sourcelink.json
+/Users/erhanyigiter/Desktop/ecomercefull/BackEnd/bin/Debug/net8.0/Newtonsoft.Json.dll
+/Users/erhanyigiter/Desktop/ecomercefull/BackEnd/bin/Debug/net8.0/Stripe.net.dll

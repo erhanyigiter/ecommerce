@@ -24,8 +24,8 @@ const ProductDetailsPage = () => {
 
   useEffect(() => {
     if (product) {
-      setSelectedSize(product.sizes && product.sizes[0] ? product.sizes[0] : '');
-      setSelectedColor(product.colors && product.colors[0] ? product.colors[0] : '');
+      setSelectedSize(product.sizes ? product.sizes[0] : '');
+      setSelectedColor(product.colors ? product.colors[0] : '');
     }
   }, [product]);
 
@@ -35,28 +35,30 @@ const ProductDetailsPage = () => {
 
   // Ürün açıklamasından renk ve beden bilgilerini ayrıştır
   const description = product.description || '';
-  const colorPattern = /Color:([^|]+)/i;
-  const sizePattern = /Sizes:([^|]+)/i;
+  const colorPattern = /Color:\s*([^|]+)/i;
+  const sizePattern = /Sizes:\s*([^|]+)/i;
 
   const colors = description.match(colorPattern) ? description.match(colorPattern)[1].split(',').map(c => c.trim()) : [];
   const sizes = description.match(sizePattern) ? description.match(sizePattern)[1].split(',').map(s => s.trim()) : [];
 
+  // Kullanıcının seçtiği renk ve beden bilgilerini al
   const handleAddToCart = () => {
-    // Sepetteki ürünleri kontrol et
+    if (!selectedColor || !selectedSize) {
+      alertify.error('Please select a color and size before adding to cart.');
+      return;
+    }
+
     const existingCartItem = cartItems.find(
-      (item) => item.product.id === product.id && item.product.description === `Size: ${selectedSize}, Color: ${selectedColor}`
+      (item) => item.product.id === product.id && item.selectedColor === selectedColor && item.selectedSizes === selectedSize
     );
 
-    // Sepetteki mevcut miktarı ve eklenmek istenen miktarı kontrol et
     const totalQuantityInCart = existingCartItem ? existingCartItem.quantity + quantity : quantity;
 
-    // Toplam miktar stoktan fazlaysa hata mesajı göster
     if (totalQuantityInCart > product.stock) {
       alertify.error('Cannot add more than available stock.');
       return;
     }
 
-    // Sepete ekleme işlemi
     const cartItem = {
       productId: product.id,
       product: {
@@ -64,14 +66,15 @@ const ProductDetailsPage = () => {
         name: product.name,
         price: product.price,
         imageUrl: product.imageUrl,
-        description: `Size: ${selectedSize}, Color: ${selectedColor}`,
+        description: product.description,
       },
+      selectedColor: selectedColor,
+      selectedSizes: selectedSize,
       quantity,
     };
+    console.log("Adding to cart:", cartItem);
 
     dispatch(addItemToCart(cartItem));
-
-    // Sepete ekleme işlemi tamamlandığında kullanıcıya bildirim göster
     alertify.success('Item added to cart successfully!');
   };
 

@@ -23,14 +23,16 @@ namespace ecommercefull.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
-            return await _context.Orders.Include(o => o.OrderDetails).ToListAsync();
+            return await _context.Orders.Include(o => o.OrderDetails).ThenInclude(od => od.Product).ToListAsync();
         }
 
         // GET: api/Orders/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrder(int id)
         {
-            var order = await _context.Orders.Include(o => o.OrderDetails).FirstOrDefaultAsync(o => o.Id == id);
+            var order = await _context.Orders.Include(o => o.OrderDetails)
+                                             .ThenInclude(od => od.Product)
+                                             .FirstOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
             {
@@ -44,6 +46,7 @@ namespace ecommercefull.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutOrder(int id, Order order)
         {
+            
 
             _context.Entry(order).State = EntityState.Modified;
 
@@ -66,15 +69,36 @@ namespace ecommercefull.Controllers
             return NoContent();
         }
 
-        // POST: api/Orders
-        [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
-        {
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
+// POST: api/Orders
+[HttpPost]
+public async Task<ActionResult<Order>> PostOrder(Order order)
+{
+    // OrderDetails içindeki Order ve Product nesnelerini set et
+    foreach (var detail in order.OrderDetails)
+    {
+        detail.Order = order; // Order'ı set et
 
-            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+        // ProductId kullanarak ilgili Product nesnesini veritabanından al
+        detail.Product = await _context.Products.FindAsync(detail.ProductId);
+
+        // Product bulunamazsa hata döndür
+        if (detail.Product == null)
+        {
+            return BadRequest($"Product with ID {detail.ProductId} not found.");
         }
+    }
+
+    // Order nesnesini veritabanına ekle
+    _context.Orders.Add(order);
+    await _context.SaveChangesAsync();
+
+    // Yeni oluşturulan order'ın bilgilerini döndür
+    return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+}
+
+
+
+
 
         // DELETE: api/Orders/5
         [HttpDelete("{id}")]
@@ -92,16 +116,17 @@ namespace ecommercefull.Controllers
             return NoContent();
         }
 
-        private bool OrderExists(int id)
-        {
-            return _context.Orders.Any(e => e.Id == id);
-        }
-        //get:api/orders/totalorders
+        // GET: api/Orders/total
         [HttpGet("total")]
         public async Task<ActionResult<int>> GetTotalOrders()
         {
             int totalOrders = await _context.Orders.CountAsync();
-            return Ok (totalOrders);
+            return Ok(totalOrders);
+        }
+
+        private bool OrderExists(int id)
+        {
+            return _context.Orders.Any(e => e.Id == id);
         }
     }
 }

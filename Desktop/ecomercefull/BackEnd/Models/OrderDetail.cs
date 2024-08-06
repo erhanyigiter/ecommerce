@@ -14,5 +14,7 @@ namespace ecomercefull.Models
         public Product Product { get; set; }
         public int Quantity { get; set; }
         public double Price { get; set; }
+        public string Color { get; set; } 
+        public string Size { get; set; } 
     }
 }

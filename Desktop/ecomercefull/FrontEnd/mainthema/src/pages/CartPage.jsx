@@ -163,7 +163,7 @@ const CartPage = () => {
               <div className="pt-2">
                 <div className="d-flex justify-content-between mt-2">
                   <h5>Total</h5>
-                  <h5>${totalPrice + 10}</h5>
+                  <h5>${totalPrice + 0}</h5>
                 </div>
                 <Button
                   color="success"

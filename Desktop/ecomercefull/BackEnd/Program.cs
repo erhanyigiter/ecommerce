@@ -25,7 +25,7 @@ internal class Program
         {
             options.AddDefaultPolicy(policy =>
             {
-                  policy.WithOrigins ("*")// her testte url değiştirmemek için * verdik
+                  policy.AllowAnyOrigin()// her testte url değiştirmemek için * verdik
                       .AllowAnyHeader()
                       .AllowAnyMethod();
             });
