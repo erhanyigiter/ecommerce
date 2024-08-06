@@ -23,16 +23,18 @@ namespace ecommercefull.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
-            return await _context.Orders.Include(o => o.OrderDetails).ThenInclude(od => od.Product).ToListAsync();
+            return await _context.Orders
+                .Include(o => o.OrderItems)
+                .ToListAsync();
         }
 
         // GET: api/Orders/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrder(int id)
         {
-            var order = await _context.Orders.Include(o => o.OrderDetails)
-                                             .ThenInclude(od => od.Product)
-                                             .FirstOrDefaultAsync(o => o.Id == id);
+            var order = await _context.Orders
+                .Include(o => o.OrderItems)
+                .FirstOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
             {
@@ -44,11 +46,14 @@ namespace ecommercefull.Controllers
 
         // PUT: api/Orders/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(int id, Order order)
+        public async Task<IActionResult> PutOrder(int id, [FromBody] Order updatedOrder)
         {
-            
+            if (id != updatedOrder.Id)
+            {
+                return BadRequest();
+            }
 
-            _context.Entry(order).State = EntityState.Modified;
+            _context.Entry(updatedOrder).State = EntityState.Modified;
 
             try
             {
@@ -69,36 +74,78 @@ namespace ecommercefull.Controllers
             return NoContent();
         }
 
-// POST: api/Orders
-[HttpPost]
-public async Task<ActionResult<Order>> PostOrder(Order order)
-{
-    // OrderDetails içindeki Order ve Product nesnelerini set et
-    foreach (var detail in order.OrderDetails)
-    {
-        detail.Order = order; // Order'ı set et
-
-        // ProductId kullanarak ilgili Product nesnesini veritabanından al
-        detail.Product = await _context.Products.FindAsync(detail.ProductId);
-
-        // Product bulunamazsa hata döndür
-        if (detail.Product == null)
+        // PATCH: api/Orders/5/updateStatus
+        [HttpPatch("{id}/updateStatus")]
+        public async Task<IActionResult> UpdateOrderStatus(int id, [FromBody] OrderStatusUpdateDto updateDto)
         {
-            return BadRequest($"Product with ID {detail.ProductId} not found.");
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            // Sadece orderStatus alanını güncelle
+            if (!string.IsNullOrEmpty(updateDto.OrderStatus))
+            {
+                order.OrderStatus = updateDto.OrderStatus;
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!OrderExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
-    }
 
-    // Order nesnesini veritabanına ekle
-    _context.Orders.Add(order);
-    await _context.SaveChangesAsync();
+        // POST: api/Orders
+        [HttpPost]
+        public async Task<ActionResult<Order>> PostOrder(Order order)
+        {
+            foreach (var item in order.OrderItems)
+            {
+                var product = await _context.Products
+                    .Where(p => p.Id == item.ProductId)
+                    .FirstOrDefaultAsync();
 
-    // Yeni oluşturulan order'ın bilgilerini döndür
-    return CreatedAtAction("GetOrder", new { id = order.Id }, order);
-}
+                if (product != null)
+                {
+                    item.ProductName = product.Name;
+                    item.Description = product.Description;
+                }
+                else
+                {
+                    // Ürün bulunamazsa varsayılan değerler ata veya hata ver
+                    item.ProductName = "Unknown Product";
+                    item.Description = "No Description";
+                }
+            }
 
+            _context.Orders.Add(order);
 
-
-
+            try
+            {
+                await _context.SaveChangesAsync();
+                return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+            }
+            catch (Exception ex)
+            {
+                // Hata loglama
+                Console.WriteLine($"Error in PostOrder: {ex.Message}");
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
         // DELETE: api/Orders/5
         [HttpDelete("{id}")]
@@ -124,9 +171,31 @@ public async Task<ActionResult<Order>> PostOrder(Order order)
             return Ok(totalOrders);
         }
 
+        // GET: api/Orders/track/{trackingId}
+        [HttpGet("track/{trackingId}")]
+        public async Task<ActionResult<Order>> GetOrderByTrackingId(string trackingId)
+        {
+            var order = await _context.Orders
+                .Include(o => o.OrderItems)
+                .FirstOrDefaultAsync(o => o.TrackingId == trackingId);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            return order;
+        }
+
         private bool OrderExists(int id)
         {
             return _context.Orders.Any(e => e.Id == id);
+        }
+
+        // DTO Class
+        public class OrderStatusUpdateDto
+        {
+            public string OrderStatus { get; set; }
         }
     }
 }

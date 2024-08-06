@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 export default function TopBar() {
   const [searchTerm, setSearchTerm] = useState('');
-  const products = useSelector((state) => state.products.products);
+  const products = useSelector((state) => state.products.products || []);
   const navigate = useNavigate();
 
   const handleSearchChange = (event) => {
@@ -14,49 +14,21 @@ export default function TopBar() {
   const handleSearchSubmit = (event) => {
     event.preventDefault();
 
-    // Büyük küçük harf duyarlılığını kaldırarak arama terimiyle eşleşen ürünleri bulma
+    // Arama terimi ile eşleşen ürünleri filtrele
     const searchResults = products.filter((product) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Arama sonuçlarını bir sayfada göstermek için yönlendirme
-    navigate('/search', { state: { searchResults } });
+    console.log(searchResults); // Konsol logları ile sonuçları kontrol edin
+
+    // Arama sonuçları sayfasına yönlendirme
+    navigate('/search', { state: { searchResults, searchTerm } });
   };
 
   return (
     <div className="container-fluid">
-      <div className="row bg-secondary py-1 px-xl-5">
-        <div className="col-lg-6 d-none d-lg-block">
-          <div className="d-inline-flex align-items-center h-100">
-            <Link className="text-body mr-3" to="#">About</Link>
-            <Link className="text-body mr-3" to="#">Contact</Link>
-            <Link className="text-body mr-3" to="#">Help</Link>
-            <Link className="text-body mr-3" to="#">FAQs</Link>
-          </div>
-        </div>
-        <div className="col-lg-6 text-center text-lg-right">
-          <div className="d-inline-flex align-items-center">
-            <div className="btn-group">
-              <button type="button" className="btn btn-sm btn-light dropdown-toggle" data-bs-toggle="dropdown">My Account</button>
-              <div className="dropdown-menu dropdown-menu-right">
-                <button className="dropdown-item" type="button">Sign in</button>
-                <button className="dropdown-item" type="button">Sign up</button>
-              </div>
-            </div>
-          </div>
-          <div className="d-inline-flex align-items-center d-block d-lg-none">
-            <Link to="/" className="btn px-0 ml-2">
-              <i className="fas fa-heart text-dark"></i>
-              <span className="badge text-dark border border-dark rounded-circle" style={{ paddingBottom: '2px' }}>0</span>
-            </Link>
-            <Link to="/" className="btn px-0 ml-2">
-              <i className="fas fa-shopping-cart text-dark"></i>
-              <span className="badge text-dark border border-dark rounded-circle" style={{ paddingBottom: '2px' }}>0</span>
-            </Link>
-          </div>
-        </div>
-      </div>
+      {/* Diğer kodlar */}
       <div className="row align-items-center bg-light py-3 px-xl-5 d-none d-lg-flex">
         <div className="col-lg-4">
           <Link to="/" className="text-decoration-none">

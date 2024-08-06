@@ -36,6 +36,7 @@ export const updateItemInCart = createAsyncThunk('cart/updateItemInCart', async 
   return response.data;
 });
 
+
 // Slice
 const shoppingCartSlice = createSlice({
   name: 'cart',

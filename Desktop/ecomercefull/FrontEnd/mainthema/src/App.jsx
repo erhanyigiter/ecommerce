@@ -1,4 +1,3 @@
-// App.js
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import MainPage from "./pages/MainPage";
@@ -12,6 +11,7 @@ import NotFound from "./components/NotFound";
 import CartPage from "./pages/CartPage";
 import CheckOut from "./pages/CheckOut";
 import Wishlist from "./pages/Whislist";
+import OrderTrackingPage from "./pages/OrderTrackingPage"; // OrderTrackingPage'i import ediyoruz
 
 function App() {
   return (
@@ -26,6 +26,7 @@ function App() {
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckOut />} />
         <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/order-tracking" element={<OrderTrackingPage />} /> {/* OrderTrackingPage rotası */}
       </Routes>
       <Footer />
       <BackToTop />

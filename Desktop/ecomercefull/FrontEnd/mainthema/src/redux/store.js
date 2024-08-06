@@ -4,6 +4,7 @@ import productsReducer from './productsSlice';
 import shoppingCartReducer from './shoppingCartSlice';
 import wishlistReducer from './wishlistSlice';
 import paymentSliceReducer from './paymentSlice';
+import orderSlice from './orderSlice';
 
 export default configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export default configureStore({
     shoppingCart: shoppingCartReducer,
     wishlist: wishlistReducer,
     payment: paymentSliceReducer,
+    orders: orderSlice,
 
   },
 });

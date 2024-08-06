@@ -11,9 +11,9 @@ import Footer from '../components/Footer';
 const Dashboard = () => {
   return (
     <div className="d-flex flex-column min-vh-100">
-      <Container className="flex-grow-1">
-        <h2>Services</h2>
-        <Row>
+      <Container className="flex-grow-1 py-4">
+        <h2>Dashboard</h2>
+        <Row className="mb-4">
           <Col md="3">
             <TotalCategory />
           </Col>
@@ -27,7 +27,7 @@ const Dashboard = () => {
             <TotalOrders />
           </Col>
         </Row>
-        <Row className="mt-4">
+        <Row>
           <Col md="8">
             <SalesChart />
           </Col>

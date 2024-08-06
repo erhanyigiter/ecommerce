@@ -5,8 +5,9 @@ const API_URL = 'http://localhost:5220/api/Orders';
 
 const initialState = {
   orders: [],
-  orderStatus: 'idle',
+  orderStatus: 'idle', // 'idle', 'loading', 'succeeded', 'failed'
   error: null,
+  currentOrder: null, // Tek bir siparişin durumunu takip etmek için state
 };
 
 // Asenkron işlemler
@@ -15,8 +16,8 @@ export const fetchOrders = createAsyncThunk('orders/fetchOrders', async () => {
   return response.data;
 });
 
-export const fetchOrder = createAsyncThunk('orders/fetchOrder', async (orderId) => {
-  const response = await axios.get(`${API_URL}/${orderId}`);
+export const fetchOrder = createAsyncThunk('orders/fetchOrder', async (trackingId) => {
+  const response = await axios.get(`${API_URL}/track/${trackingId}`);
   return response.data;
 });
 
@@ -53,10 +54,17 @@ const ordersSlice = createSlice({
         state.orderStatus = 'failed';
         state.error = action.error.message;
       })
+      .addCase(fetchOrder.pending, (state) => {
+        state.orderStatus = 'loading';
+      })
       .addCase(fetchOrder.fulfilled, (state, action) => {
-        state.orders = state.orders.map((order) =>
-          order.id === action.payload.id ? action.payload : order
-        );
+        state.orderStatus = 'succeeded';
+        state.currentOrder = action.payload; // Alınan siparişi currentOrder'a kaydet
+      })
+      .addCase(fetchOrder.rejected, (state, action) => {
+        state.orderStatus = 'failed';
+        state.error = action.error.message;
+        state.currentOrder = null; // Sipariş bulunamadığında currentOrder'u temizle
       })
       .addCase(createOrder.fulfilled, (state, action) => {
         state.orders.push(action.payload);

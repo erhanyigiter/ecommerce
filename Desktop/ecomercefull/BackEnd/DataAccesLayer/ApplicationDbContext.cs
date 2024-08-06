@@ -15,10 +15,11 @@ namespace ecomercefull.DataAccesLayer
         }
         public DbSet<Models.Product> Products { get; set; } = null!;
         public DbSet<Models.Category> Categories { get; set; } = null!;
-        public DbSet<Models.Order> Orders { get; set; } = null!;
-        public DbSet<Models.OrderDetail> OrderDetails { get; set; } = null!;
+
         public DbSet<Models.ShoppingCart> ShoppingCarts { get; set; } = null!;
         public DbSet<Models.User> Users { get; set; } = null!;
+        public DbSet<Models.Order> Orders { get; set; } = null!;
+        public DbSet<Models.OrderItem> OrderItems { get; set; } = null!;
 
     }
 }

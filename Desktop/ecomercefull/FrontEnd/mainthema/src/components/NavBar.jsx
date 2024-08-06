@@ -61,7 +61,7 @@ const NavBar = () => {
               <div className="navbar-nav mr-auto py-0">
                 <Link to="/" className="nav-item nav-link active">Home</Link>
                 <Link to="/shop" className="nav-item nav-link">Shop</Link>
-                <Link to="/about" className="nav-item nav-link">About</Link>
+                <Link to="/order-tracking" className="nav-item nav-link">Tracking</Link>
                 <Link to="/contact" className="nav-item nav-link">Contact</Link>
               </div>
               <div className="navbar-nav ml-auto py-0 d-none d-lg-block">

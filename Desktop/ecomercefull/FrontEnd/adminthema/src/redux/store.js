@@ -6,6 +6,7 @@ import productsReducer from './productsSlice';
 import totalProductReducer from './totalProductSlice';
 import totalCategoryReducer from './totalCategorySlice';
 import totalUserReducer from './totalUserSlice';
+import ordersSlice from './ordersSlice';
 export default configureStore({
   reducer: {
     categories: categoriesReducer,
@@ -15,6 +16,7 @@ export default configureStore({
     totalCategory: totalCategoryReducer,
     totalUser: totalUserReducer,
     totalOrders: totalOrdersSlice,
+    orders: ordersSlice,
 
   },
 });

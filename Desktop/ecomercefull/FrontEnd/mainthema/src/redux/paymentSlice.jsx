@@ -1,4 +1,3 @@
-// paymentSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { CardElement } from '@stripe/react-stripe-js';
@@ -11,11 +10,19 @@ export const initiatePayment = createAsyncThunk(
       // CardElement bileşenini elements nesnesinden alın
       const cardElement = elements.getElement(CardElement);
 
+      if (!cardElement) {
+        throw new Error("CardElement not found");
+      }
+
       // Stripe ile token oluşturma
       const { token, error } = await stripe.createToken(cardElement);
 
       if (error) {
         throw new Error(error.message);
+      }
+
+      if (!token) {
+        throw new Error("Token creation failed");
       }
 
       // Backend'e ödeme talebi gönderme
@@ -26,12 +33,12 @@ export const initiatePayment = createAsyncThunk(
 
       return response.data; // Ödeme başarılı, response data'yı döndür
     } catch (err) {
-      console.error(err);
+      console.error("Payment Error:", err);
       // Hata durumunda detaylı hata mesajı döndürülür
       if (err.response && err.response.data) {
         return rejectWithValue(err.response.data);
       }
-      return rejectWithValue(err.message);
+      return rejectWithValue(err.message || 'An unexpected error occurred');
     }
   }
 );
